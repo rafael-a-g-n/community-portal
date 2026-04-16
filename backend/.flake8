@@ -1,0 +1,13 @@
+[flake8]
+max-line-length = 100
+exclude =
+    .git,
+    __pycache__,
+    .pytest_cache,
+    .venv,
+    venv,
+    migrations,
+    staticfiles,
+    media,
+    build,
+    dist
