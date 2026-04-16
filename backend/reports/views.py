@@ -1,5 +1,4 @@
-from rest_framework import status
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import (
     ListAPIView,
@@ -34,6 +33,26 @@ class ReportListCreateView(ListCreateAPIView):
     ordering_fields = ["created_at", "status"]
     ordering = ["-created_at"]
     throttle_classes = [AnonRateThrottle]
+
+    def filter_queryset(self, queryset):
+        ordering = self.request.query_params.get("ordering")
+        if ordering:
+            allowed_fields = set(self.ordering_fields)
+            requested_fields = [field.strip() for field in ordering.split(",") if field.strip()]
+            invalid_fields = [
+                field for field in requested_fields if field.lstrip("-") not in allowed_fields
+            ]
+            if invalid_fields:
+                raise ValidationError(
+                    {
+                        "ordering": (
+                            "Invalid ordering field(s): "
+                            f"{', '.join(invalid_fields)}. "
+                            f"Allowed: {', '.join(sorted(allowed_fields))}."
+                        )
+                    }
+                )
+        return super().filter_queryset(queryset)
 
 
 class ReportDetailView(RetrieveUpdateAPIView):

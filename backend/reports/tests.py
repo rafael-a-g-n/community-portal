@@ -164,3 +164,43 @@ class TestReportFiltering:
     def test_report_list_filter_invalid_status_returns_400(self, api_client):
         response = api_client.get("/api/v1/reports/?status=not-a-real-status")
         assert response.status_code == 400
+
+
+@pytest.mark.django_db
+class TestReportOrdering:
+    """Test /api/v1/reports/ ordering allowlist behavior."""
+
+    def test_report_list_ordering_by_status_works(self, api_client):
+        category = Category.objects.create(name="Ordering", icon="sort")
+
+        Report.objects.create(
+            title="Resolved report",
+            description="Description long enough for resolved report.",
+            category=category,
+            status=Report.Status.RESOLVED,
+        )
+        Report.objects.create(
+            title="Open report",
+            description="Description long enough for open report.",
+            category=category,
+            status=Report.Status.OPEN,
+        )
+        Report.objects.create(
+            title="In-progress report",
+            description="Description long enough for in-progress report.",
+            category=category,
+            status=Report.Status.IN_PROGRESS,
+        )
+
+        response = api_client.get("/api/v1/reports/?ordering=status")
+        assert response.status_code == 200
+
+        payload = response.json()
+        data = payload["results"] if isinstance(payload, dict) else payload
+        statuses = [item["status"] for item in data]
+        assert statuses == sorted(statuses)
+
+    def test_report_list_ordering_by_title_is_rejected(self, api_client):
+        response = api_client.get("/api/v1/reports/?ordering=title")
+        assert response.status_code == 400
+        assert "ordering" in response.json()
