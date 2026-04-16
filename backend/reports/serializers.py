@@ -85,18 +85,24 @@ class ReportSerializer(serializers.ModelSerializer):
 
         # 2. Check format using Pillow
         try:
-            img = Image.open(value)
-            fmt = img.format
+            image = Image.open(value)
+            fmt = image.format
+            image.verify()
             allowed_formats = {"JPEG", "PNG", "WEBP", "GIF"}
             if fmt not in allowed_formats:
                 raise serializers.ValidationError(
-                    f"Photo format must be one of: {', '.join(allowed_formats)}"
+                    "Photo format must be one of: JPEG, PNG, WEBP, GIF"
                 )
-        except Exception as e:
-            raise serializers.ValidationError(f"Invalid image file: {str(e)}")
+        except serializers.ValidationError:
+            raise
+        except Exception:
+            raise serializers.ValidationError("Invalid image file.")
+
+        if hasattr(value, "seek"):
+            value.seek(0)
 
         # 3. Rename file to UUID
-        extension = img.format.lower()
+        extension = fmt.lower()
         if extension == "jpeg":
             extension = "jpg"
         new_filename = f"{uuid.uuid4()}.{extension}"

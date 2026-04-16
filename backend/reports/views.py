@@ -25,14 +25,18 @@ class CategoryListView(ListAPIView):
 
 class ReportListCreateView(ListCreateAPIView):
     """List reports or create a new one."""
-    queryset = Report.objects.all()
+    queryset = Report.objects.select_related("category").all()
     serializer_class = ReportSerializer
     permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = ReportFilter
     ordering_fields = ["created_at", "status"]
     ordering = ["-created_at"]
-    throttle_classes = [AnonRateThrottle]
+
+    def get_throttles(self):
+        if self.request.method == "POST" and not self.request.user.is_authenticated:
+            return [AnonRateThrottle()]
+        return []
 
     def filter_queryset(self, queryset):
         ordering = self.request.query_params.get("ordering")
@@ -57,7 +61,7 @@ class ReportListCreateView(ListCreateAPIView):
 
 class ReportDetailView(RetrieveUpdateAPIView):
     """Retrieve or update a report (PATCH only; GET public, PATCH admin)."""
-    queryset = Report.objects.all()
+    queryset = Report.objects.select_related("category").all()
     serializer_class = ReportSerializer
     http_method_names = ["get", "patch"]
     lookup_field = "id"

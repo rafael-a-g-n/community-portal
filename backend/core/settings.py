@@ -2,12 +2,28 @@
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-change-me"
-DEBUG = True
 
-ALLOWED_HOSTS: list[str] = []
+def _get_bool_env(name: str, default: bool = False) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _get_list_env(name: str, default: list[str]) -> list[str]:
+    value = os.getenv(name)
+    if not value:
+        return default
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me")
+DEBUG = _get_bool_env("DEBUG", True)
+
+ALLOWED_HOSTS: list[str] = _get_list_env("ALLOWED_HOSTS", ["localhost", "127.0.0.1"])
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -62,8 +78,19 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD", "postgres"),
         "HOST": os.getenv("DB_HOST", "127.0.0.1"),
         "PORT": os.getenv("DB_PORT", "5432"),
+        "OPTIONS": {
+            "sslmode": os.getenv("DB_SSLMODE", "prefer"),
+        },
     }
 }
+
+if not DEBUG:
+    if SECRET_KEY == "django-insecure-change-me":
+        raise ImproperlyConfigured("SECRET_KEY must be set in non-debug environments.")
+    if os.getenv("DB_PASSWORD") in {None, "", "postgres"}:
+        raise ImproperlyConfigured(
+            "DB_PASSWORD must be set to a non-default value in non-debug environments."
+        )
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -118,6 +145,26 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+CORS_ALLOWED_ORIGINS = _get_list_env("CORS_ALLOWED_ORIGINS", CORS_ALLOWED_ORIGINS)
+CSRF_TRUSTED_ORIGINS = _get_list_env("CSRF_TRUSTED_ORIGINS", CORS_ALLOWED_ORIGINS)
+
+# Keep credentials disabled by default for cross-origin requests.
+CORS_ALLOW_CREDENTIALS = _get_bool_env("CORS_ALLOW_CREDENTIALS", False)
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = _get_bool_env("SECURE_SSL_REDIRECT", True)
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = _get_bool_env(
+        "SECURE_HSTS_INCLUDE_SUBDOMAINS", True
+    )
+    SECURE_HSTS_PRELOAD = _get_bool_env("SECURE_HSTS_PRELOAD", True)
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Community Portal API",
