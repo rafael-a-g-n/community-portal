@@ -20,6 +20,7 @@ def _get_list_env(name: str, default: list[str]) -> list[str]:
         return default
     return [item.strip() for item in value.split(",") if item.strip()]
 
+
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me")
 DEBUG = _get_bool_env("DEBUG", True)
 
