@@ -61,6 +61,7 @@ class ReportDetailView(RetrieveUpdateAPIView):
     serializer_class = ReportSerializer
     http_method_names = ["get", "patch"]
     lookup_field = "id"
+    lookup_url_kwarg = "pk"
 
     def get_permissions(self):
         """GET public, PATCH requires admin."""

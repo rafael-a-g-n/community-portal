@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 
 from .models import Category, Report
@@ -204,3 +205,51 @@ class TestReportOrdering:
         response = api_client.get("/api/v1/reports/?ordering=title")
         assert response.status_code == 400
         assert "ordering" in response.json()
+
+
+@pytest.mark.django_db
+class TestReportDetailPatchPermissions:
+    """Test /api/v1/reports/<uuid:pk>/ PATCH permission behavior."""
+
+    def test_report_detail_patch_as_anonymous_returns_403(self, api_client):
+        category = Category.objects.create(name="Parks", icon="tree")
+        report = Report.objects.create(
+            title="Bench damaged",
+            description="A park bench is damaged and needs maintenance.",
+            category=category,
+            status=Report.Status.OPEN,
+        )
+
+        response = api_client.patch(
+            f"/api/v1/reports/{report.id}/",
+            {"status": Report.Status.RESOLVED},
+            format="json",
+        )
+        assert response.status_code == 403
+
+    def test_report_detail_patch_as_admin_updates_status(self, api_client):
+        category = Category.objects.create(name="Transit", icon="bus")
+        report = Report.objects.create(
+            title="Bus stop sign missing",
+            description="The bus stop sign is missing at this location.",
+            category=category,
+            status=Report.Status.OPEN,
+        )
+
+        User = get_user_model()
+        admin_user = User.objects.create_user(
+            username="staff_admin",
+            password="admin-pass-123",
+            is_staff=True,
+        )
+        api_client.force_authenticate(user=admin_user)
+
+        response = api_client.patch(
+            f"/api/v1/reports/{report.id}/",
+            {"status": Report.Status.RESOLVED},
+            format="json",
+        )
+        assert response.status_code == 200
+
+        report.refresh_from_db()
+        assert report.status == Report.Status.RESOLVED
