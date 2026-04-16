@@ -75,3 +75,44 @@ class TestReportCreateEndpoint:
 
         created = Report.objects.get(id=response.json()["id"])
         assert created.status == Report.Status.OPEN
+
+
+@pytest.mark.django_db
+class TestReportValidation:
+    """Test /api/v1/reports/ payload validation behavior."""
+
+    def test_report_create_rejects_short_title(self, api_client):
+        category = Category.objects.create(name="Road", icon="cone")
+        payload = {
+            "title": "Bad",
+            "description": "This description is long enough to pass validation.",
+            "category_id": category.id,
+        }
+
+        response = api_client.post("/api/v1/reports/", payload, format="json")
+        assert response.status_code == 400
+        assert "title" in response.json()
+
+    def test_report_create_rejects_short_description(self, api_client):
+        category = Category.objects.create(name="Road", icon="cone")
+        payload = {
+            "title": "Very valid title",
+            "description": "Too short",
+            "category_id": category.id,
+        }
+
+        response = api_client.post("/api/v1/reports/", payload, format="json")
+        assert response.status_code == 400
+        assert "description" in response.json()
+
+    def test_report_create_rejects_description_over_5000_chars(self, api_client):
+        category = Category.objects.create(name="Road", icon="cone")
+        payload = {
+            "title": "Valid title",
+            "description": "x" * 5001,
+            "category_id": category.id,
+        }
+
+        response = api_client.post("/api/v1/reports/", payload, format="json")
+        assert response.status_code == 400
+        assert "description" in response.json()
