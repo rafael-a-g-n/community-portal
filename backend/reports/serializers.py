@@ -1,8 +1,5 @@
 import uuid
-from io import BytesIO
 
-from django.core.exceptions import ValidationError as DjangoValidationError
-from django.core.files.base import ContentFile
 from PIL import Image
 from rest_framework import serializers
 
