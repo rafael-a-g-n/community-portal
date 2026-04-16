@@ -53,3 +53,25 @@ class TestCategoryListEndpoint:
         """Test that category list is accessible without authentication."""
         response = api_client.get("/api/v1/categories/")
         assert response.status_code == 200
+
+
+@pytest.mark.django_db
+class TestReportCreateEndpoint:
+    """Test /api/v1/reports/ create behavior."""
+
+    def test_report_create_forces_status_open(self, api_client):
+        """Citizens cannot set status during report creation."""
+        category = Category.objects.create(name="Lighting", icon="bulb")
+
+        payload = {
+            "title": "Streetlight outage",
+            "description": "The streetlight has been off for over two nights.",
+            "category_id": category.id,
+            "status": "resolved",
+        }
+
+        response = api_client.post("/api/v1/reports/", payload, format="json")
+        assert response.status_code == 201
+
+        created = Report.objects.get(id=response.json()["id"])
+        assert created.status == Report.Status.OPEN
