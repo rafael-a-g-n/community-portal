@@ -1,6 +1,12 @@
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
+from PIL import Image
+
+from io import BytesIO
+import os
+import uuid
 
 from .models import Category, Report
 
@@ -253,3 +259,88 @@ class TestReportDetailPatchPermissions:
 
         report.refresh_from_db()
         assert report.status == Report.Status.RESOLVED
+
+
+@pytest.mark.django_db
+class TestReportPhotoUploadValidation:
+    """Test /api/v1/reports/ photo upload hardening behavior."""
+
+    def _make_image_upload(self, fmt, filename):
+        image = Image.new("RGB", (16, 16), color=(123, 45, 67))
+        buffer = BytesIO()
+        image.save(buffer, format=fmt)
+        buffer.seek(0)
+        content_type = f"image/{fmt.lower()}"
+        if fmt.upper() == "JPEG":
+            content_type = "image/jpeg"
+        return SimpleUploadedFile(filename, buffer.getvalue(), content_type=content_type)
+
+    def test_report_create_with_valid_png_upload_returns_201_and_uuid_filename(self, api_client):
+        category = Category.objects.create(name="Waste", icon="bin")
+        photo = self._make_image_upload("PNG", "my-original-image-name.png")
+
+        payload = {
+            "title": "Overflowing public bin",
+            "description": "Public trash bin is overflowing and needs pickup soon.",
+            "category_id": str(category.id),
+            "photo": photo,
+        }
+
+        response = api_client.post("/api/v1/reports/", payload, format="multipart")
+        assert response.status_code == 201
+
+        report = Report.objects.get(id=response.json()["id"])
+        basename = os.path.basename(report.photo.name)
+        stem, ext = os.path.splitext(basename)
+        assert ext.lower() == ".png"
+        assert basename != "my-original-image-name.png"
+        parsed_uuid = uuid.UUID(stem)
+        assert str(parsed_uuid) == stem
+
+    def test_report_create_with_invalid_image_bytes_returns_400(self, api_client):
+        category = Category.objects.create(name="Roadworks", icon="cone")
+        fake_image = SimpleUploadedFile(
+            "not-really-an-image.png",
+            b"this is not valid image data",
+            content_type="image/png",
+        )
+
+        payload = {
+            "title": "Road marking issue",
+            "description": "Lane markings have faded and are hard to see at night.",
+            "category_id": str(category.id),
+            "photo": fake_image,
+        }
+
+        response = api_client.post("/api/v1/reports/", payload, format="multipart")
+        assert response.status_code == 400
+        assert "photo" in response.json()
+
+    def test_report_create_with_disallowed_image_format_returns_400(self, api_client):
+        category = Category.objects.create(name="Parks", icon="tree")
+        bmp_photo = self._make_image_upload("BMP", "map.bmp")
+
+        payload = {
+            "title": "Trail sign damaged",
+            "description": "Trail sign board is damaged and text is not readable anymore.",
+            "category_id": str(category.id),
+            "photo": bmp_photo,
+        }
+
+        response = api_client.post("/api/v1/reports/", payload, format="multipart")
+        assert response.status_code == 400
+        assert "photo" in response.json()
+
+    def test_report_create_with_valid_jpeg_upload_returns_201(self, api_client):
+        category = Category.objects.create(name="Lighting", icon="bulb")
+        jpeg_photo = self._make_image_upload("JPEG", "camera-name.jpeg")
+
+        payload = {
+            "title": "Streetlamp flickering",
+            "description": "Lamp keeps flickering and creates unsafe visibility on crosswalk.",
+            "category_id": str(category.id),
+            "photo": jpeg_photo,
+        }
+
+        response = api_client.post("/api/v1/reports/", payload, format="multipart")
+        assert response.status_code == 201
