@@ -1,1 +1,45 @@
+import uuid
+
 from django.db import models
+from django.utils.text import slugify
+
+
+class Category(models.Model):
+	name = models.CharField(max_length=120, unique=True)
+	slug = models.SlugField(max_length=140, unique=True, blank=True)
+	icon = models.CharField(max_length=120, blank=True)
+
+	def save(self, *args, **kwargs):
+		if not self.slug:
+			self.slug = slugify(self.name)
+		return super().save(*args, **kwargs)
+
+	def __str__(self):
+		return self.name
+
+
+class Report(models.Model):
+	class Status(models.TextChoices):
+		OPEN = "open", "Open"
+		IN_PROGRESS = "in_progress", "In Progress"
+		RESOLVED = "resolved", "Resolved"
+
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	title = models.CharField(max_length=255)
+	description = models.TextField()
+	category = models.ForeignKey(
+		Category,
+		on_delete=models.PROTECT,
+		related_name="reports",
+	)
+	status = models.CharField(
+		max_length=20,
+		choices=Status.choices,
+		default=Status.OPEN,
+	)
+	photo = models.ImageField(upload_to="reports/photos/", blank=True, null=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.title
