@@ -116,3 +116,51 @@ class TestReportValidation:
         response = api_client.post("/api/v1/reports/", payload, format="json")
         assert response.status_code == 400
         assert "description" in response.json()
+
+
+@pytest.mark.django_db
+class TestReportFiltering:
+    """Test /api/v1/reports/ filter behavior."""
+
+    def test_report_list_filter_by_status_open(self, api_client):
+        category_a = Category.objects.create(name="Road", icon="cone")
+        category_b = Category.objects.create(name="Utilities", icon="bolt")
+
+        open_report_1 = Report.objects.create(
+            title="Open report one",
+            description="Description long enough for report one.",
+            category=category_a,
+            status=Report.Status.OPEN,
+        )
+        Report.objects.create(
+            title="In-progress report",
+            description="Description long enough for in-progress report.",
+            category=category_a,
+            status=Report.Status.IN_PROGRESS,
+        )
+        open_report_2 = Report.objects.create(
+            title="Open report two",
+            description="Description long enough for report two.",
+            category=category_b,
+            status=Report.Status.OPEN,
+        )
+        Report.objects.create(
+            title="Resolved report",
+            description="Description long enough for resolved report.",
+            category=category_b,
+            status=Report.Status.RESOLVED,
+        )
+
+        response = api_client.get("/api/v1/reports/?status=open")
+        assert response.status_code == 200
+
+        payload = response.json()
+        data = payload["results"] if isinstance(payload, dict) else payload
+
+        returned_ids = {item["id"] for item in data}
+        assert returned_ids == {str(open_report_1.id), str(open_report_2.id)}
+        assert all(item["status"] == Report.Status.OPEN for item in data)
+
+    def test_report_list_filter_invalid_status_returns_400(self, api_client):
+        response = api_client.get("/api/v1/reports/?status=not-a-real-status")
+        assert response.status_code == 400
