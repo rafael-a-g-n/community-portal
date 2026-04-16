@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from PIL import Image
 from rest_framework import serializers
@@ -39,10 +40,10 @@ class ReportSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
-    def get_status_display(self, obj):
+    def get_status_display(self, obj: Report) -> str:
         return obj.get_status_display()
 
-    def validate_title(self, value):
+    def validate_title(self, value: str) -> str:
         """Trim and enforce minimum length."""
         value = value.strip() if isinstance(value, str) else value
         if len(value) < 5:
@@ -51,7 +52,7 @@ class ReportSerializer(serializers.ModelSerializer):
             )
         return value
 
-    def validate_description(self, value):
+    def validate_description(self, value: str) -> str:
         """Trim and enforce min/max length."""
         value = value.strip() if isinstance(value, str) else value
         if len(value) < 10:
@@ -64,7 +65,7 @@ class ReportSerializer(serializers.ModelSerializer):
             )
         return value
 
-    def validate_status(self, value):
+    def validate_status(self, value: str) -> str:
         """Ensure status is in valid choices."""
         valid_choices = [choice[0] for choice in Report.Status.choices]
         if value not in valid_choices:
@@ -73,7 +74,7 @@ class ReportSerializer(serializers.ModelSerializer):
             )
         return value
 
-    def validate_photo(self, value):
+    def validate_photo(self, value: Any) -> Any:
         """Validate photo: size, format, and rename with UUID."""
         if not value:
             return value
@@ -91,7 +92,7 @@ class ReportSerializer(serializers.ModelSerializer):
             allowed_formats = {"JPEG", "PNG", "WEBP", "GIF"}
             if fmt not in allowed_formats:
                 raise serializers.ValidationError(
-                    "Photo format must be one of: JPEG, PNG, WEBP, GIF"
+                    "Photo format must be one of: GIF, JPEG, PNG, WEBP"
                 )
         except serializers.ValidationError:
             raise
