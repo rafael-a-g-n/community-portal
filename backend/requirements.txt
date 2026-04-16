@@ -1,0 +1,16 @@
+Django
+
+djangorestframework
+django-filter
+drf-spectacular
+django-cors-headers
+
+# PostgreSQL driver (choose one in deployment)
+psycopg
+psycopg2
+
+Pillow
+
+# Testing
+pytest
+pytest-django
