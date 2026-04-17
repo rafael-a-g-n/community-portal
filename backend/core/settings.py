@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "reports.apps.ReportsConfig",
+    "siteconfig.apps.SiteconfigConfig",
     "rest_framework",
     "rest_framework.authtoken",
     "django_filters",

@@ -24,7 +24,7 @@ from drf_spectacular.utils import (
 
 from .filters import ReportFilter
 from .models import Category, Report
-from .serializers import CategorySerializer, ReportSerializer
+from .serializers import CategorySerializer, CategoryWriteSerializer, ReportSerializer
 
 
 @extend_schema_view(
@@ -52,9 +52,14 @@ class CategoryAdminView(ListCreateAPIView):
     """List all categories (public) or create a new one (admin only)."""
 
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
     pagination_class = None
     throttle_classes = []
+
+    def get_serializer_class(self):
+        """Use write serialiser for mutations; read-only for GET."""
+        if self.request.method == "POST":
+            return CategoryWriteSerializer
+        return CategorySerializer
 
     def get_permissions(self) -> list[BasePermission]:
         """GET is public; POST requires admin."""
@@ -103,8 +108,13 @@ class CategoryAdminDetailView(RetrieveUpdateDestroyAPIView):
     """Retrieve (public), update or delete (admin only) a single category."""
 
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
     http_method_names = ["get", "patch", "delete"]
+
+    def get_serializer_class(self):
+        """Use write serialiser for mutations; read-only for GET."""
+        if self.request.method == "PATCH":
+            return CategoryWriteSerializer
+        return CategorySerializer
 
     def get_permissions(self) -> list[BasePermission]:
         """GET is public; PATCH and DELETE require admin."""

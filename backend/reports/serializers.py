@@ -8,10 +8,49 @@ from .models import Category, Report
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """Read-only serialiser used for public category list/detail responses."""
+
     class Meta:
         model = Category
         fields = ["id", "name", "slug", "icon"]
         read_only_fields = ["id", "name", "slug", "icon"]
+
+
+class CategoryWriteSerializer(serializers.ModelSerializer):
+    """Write serialiser used for admin create/update of categories.
+
+    Enforces strict sanitisation:
+    - name: stripped, 2–120 characters, unique enforced by model.
+    - icon: stripped, max 120 characters (optional emoji/text label).
+    Slug is derived automatically by the model's ``save()`` method.
+    """
+
+    class Meta:
+        model = Category
+        fields = ["id", "name", "slug", "icon"]
+        read_only_fields = ["id", "slug"]
+
+    def validate_name(self, value: str) -> str:
+        value = value.strip() if isinstance(value, str) else value
+        if len(value) < 2:
+            raise serializers.ValidationError(
+                "Category name must be at least 2 characters long."
+            )
+        if len(value) > 120:
+            raise serializers.ValidationError(
+                "Category name must not exceed 120 characters."
+            )
+        return value
+
+    def validate_icon(self, value: str) -> str:
+        if not isinstance(value, str):
+            return value
+        value = value.strip()
+        if len(value) > 120:
+            raise serializers.ValidationError(
+                "Icon label must not exceed 120 characters."
+            )
+        return value
 
 
 class ReportSerializer(serializers.ModelSerializer):
