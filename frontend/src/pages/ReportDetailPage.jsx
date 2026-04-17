@@ -2,16 +2,15 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { reportService } from '../services/reportService';
 import { StatusBadge } from '../components/ReportCard';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Tag, 
-  Clock, 
-  MapPin, 
-  Loader2, 
+import {
+  ArrowLeft,
+  Calendar,
+  Tag,
+  Clock,
+  MapPin,
+  Loader2,
   AlertCircle,
-  CheckCircle2,
-  Settings2
+  MessageSquareCheck,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -20,7 +19,6 @@ export default function ReportDetailPage() {
   const navigate = useNavigate();
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -30,7 +28,7 @@ export default function ReportDetailPage() {
         setLoading(true);
         const data = await reportService.getReport(id);
         setReport(data);
-      } catch (err) {
+      } catch {
         setError('Report not found or failed to load.');
       } finally {
         setLoading(false);
@@ -38,19 +36,6 @@ export default function ReportDetailPage() {
     }
     loadReport();
   }, [id]);
-
-  const handleStatusUpdate = async (newStatus) => {
-    if (!id || !report) return;
-    try {
-      setUpdating(true);
-      const updated = await reportService.updateReport(id, { status: newStatus });
-      setReport(updated);
-    } catch (err) {
-      alert('Failed to update status.');
-    } finally {
-      setUpdating(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -67,7 +52,7 @@ export default function ReportDetailPage() {
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
         <p className="text-gray-600 mb-8">{error || 'Report not found.'}</p>
-        <button 
+        <button
           onClick={() => navigate('/')}
           className="px-8 py-3 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 transition-all"
         >
@@ -82,7 +67,7 @@ export default function ReportDetailPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-testid="detail-view">
-      <button 
+      <button
         onClick={() => navigate(-1)}
         className="flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600 mb-8 transition-colors"
       >
@@ -92,17 +77,17 @@ export default function ReportDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-8">
-          <motion.div 
+        <div className="lg:col-span-2 space-y-6">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden"
           >
             <div className="aspect-video w-full bg-gray-100 relative">
               {imageUrl ? (
-                <img 
-                  src={imageUrl} 
-                  alt={report.title} 
+                <img
+                  src={imageUrl}
+                  alt={report.title}
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                 />
@@ -112,7 +97,7 @@ export default function ReportDetailPage() {
                 </div>
               )}
             </div>
-            
+
             <div className="p-8 sm:p-10">
               <div className="flex flex-wrap items-center gap-3 mb-6">
                 <StatusBadge status={report.status} />
@@ -156,53 +141,52 @@ export default function ReportDetailPage() {
               </div>
             </div>
           </motion.div>
+
+          {/* Resolution Comment — shown to all users when present */}
+          {report.resolution_comment && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-green-50 border border-green-200 rounded-3xl p-6 sm:p-8"
+              data-testid="resolution-comment"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-green-100 rounded-xl">
+                  <MessageSquareCheck className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-green-800 text-sm">Official Response</h3>
+                  <p className="text-xs text-green-600">From the Community Portal team</p>
+                </div>
+              </div>
+              <p className="text-green-900 leading-relaxed whitespace-pre-wrap text-sm">
+                {report.resolution_comment}
+              </p>
+            </motion.div>
+          )}
         </div>
 
-        {/* Sidebar / Actions */}
+        {/* Sidebar */}
         <div className="space-y-6">
-          <motion.div 
+          {/* Status Info Card */}
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.15 }}
             className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100"
           >
-            <div className="flex items-center space-x-2 mb-6">
-              <Settings2 className="w-5 h-5 text-indigo-600" />
-              <h3 className="font-bold text-gray-900">Manage Report</h3>
-            </div>
-
-            <div className="space-y-3">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Update Status</p>
-              
-              {['open', 'in_progress', 'resolved'].map((status) => {
-                const label = status.replace('_', ' ').replace(/\b\w/g, char => char.toUpperCase());
-                return (
-                  <button
-                    key={status}
-                    disabled={updating || report.status === status}
-                    onClick={() => handleStatusUpdate(status)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                      report.status === status
-                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100'
-                        : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                    } disabled:opacity-50`}
-                  >
-                    {label}
-                    {report.status === status && <CheckCircle2 className="w-4 h-4" />}
-                  </button>
-                );
-              })}
-            </div>
-
-            {updating && (
-              <div className="mt-4 flex items-center justify-center text-xs text-indigo-600 font-medium animate-pulse">
-                <Loader2 className="w-3 h-3 mr-2 animate-spin" />
-                Updating status...
-              </div>
-            )}
+            <h3 className="font-bold text-gray-900 mb-4 text-sm uppercase tracking-wider text-gray-500">
+              Current Status
+            </h3>
+            <StatusBadge status={report.status} />
+            <p className="text-xs text-gray-400 mt-4 leading-relaxed">
+              Status updates are managed by the Community Portal administration team.
+            </p>
           </motion.div>
 
-          <motion.div 
+          {/* Contact Card */}
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
