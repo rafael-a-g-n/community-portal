@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import HomePage from './HomePage';
@@ -53,6 +53,28 @@ describe('HomePage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('error-message')).toBeInTheDocument();
       expect(screen.getByText('Oops! Something went wrong')).toBeInTheDocument();
+    });
+  });
+
+  it('triggers search after debounce delay', async () => {
+    vi.spyOn(reportService, 'getReports').mockResolvedValue({ count: 0, results: [] });
+    
+    renderWithRouter(<HomePage />);
+    
+    // Initial call on mount
+    await waitFor(() => expect(reportService.getReports).toHaveBeenCalled());
+
+    const searchInput = screen.getByPlaceholderText('Search reports...');
+    fireEvent.change(searchInput, { target: { value: 'pavement' } });
+
+    // Wait for the debounce (300ms) + some buffer for the async effect
+    await new Promise(r => setTimeout(r, 500));
+
+    // Ensure the fetch is called with the search param
+    await waitFor(() => {
+      expect(reportService.getReports).toHaveBeenCalledWith(expect.objectContaining({ 
+        search: 'pavement' 
+      }));
     });
   });
 });

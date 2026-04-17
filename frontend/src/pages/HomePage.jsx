@@ -14,13 +14,27 @@ export default function HomePage() {
   
   const [selectedCategory, setSelectedCategory] = useState(undefined);
   const [selectedStatus, setSelectedStatus] = useState(undefined);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
         const [reportsData, categoriesData] = await Promise.all([
-          reportService.getReports({ category: selectedCategory, status: selectedStatus }),
+          reportService.getReports({ 
+            category: selectedCategory, 
+            status: selectedStatus,
+            search: debouncedSearch 
+          }),
           reportService.getCategories(),
         ]);
         setReports(reportsData.results);
@@ -32,7 +46,7 @@ export default function HomePage() {
       }
     }
     fetchData();
-  }, [selectedCategory, selectedStatus]);
+  }, [selectedCategory, selectedStatus, debouncedSearch]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -91,6 +105,8 @@ export default function HomePage() {
           <input 
             type="text" 
             placeholder="Search reports..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-full text-sm focus:ring-2 focus:ring-indigo-500 outline-none w-full md:w-64"
           />
         </div>
