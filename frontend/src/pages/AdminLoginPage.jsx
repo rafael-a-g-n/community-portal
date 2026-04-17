@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../services/authService';
 import { ShieldCheck, Loader2, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,9 +23,9 @@ export default function AdminLoginPage() {
     } catch (err) {
       const status = err?.response?.status;
       if (status === 400 || status === 401) {
-        setError('Invalid username or password.');
+        setError(t('auth.invalidCredentials'));
       } else {
-        setError('Unable to connect to the server. Please try again.');
+        setError(t('auth.serverError'));
       }
     } finally {
       setLoading(false);
@@ -43,8 +45,8 @@ export default function AdminLoginPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-200 mb-5">
             <ShieldCheck className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Admin Portal</h1>
-          <p className="text-gray-500 mt-2 text-sm">Sign in to manage community reports</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">{t('auth.adminPortal')}</h1>
+          <p className="text-gray-500 mt-2 text-sm">{t('auth.signInToManage')}</p>
         </div>
 
         {/* Card */}
@@ -65,7 +67,7 @@ export default function AdminLoginPage() {
             <div className="space-y-5">
               <div>
                 <label htmlFor="username" className="block text-sm font-bold text-gray-700 mb-2">
-                  Username
+                  {t('auth.username')}
                 </label>
                 <input
                   id="username"
@@ -75,13 +77,13 @@ export default function AdminLoginPage() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-gray-50 hover:bg-white"
-                  placeholder="Enter your username"
+                  placeholder={t('auth.username')}
                 />
               </div>
 
               <div>
                 <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-2">
-                  Password
+                  {t('auth.password')}
                 </label>
                 <input
                   id="password"
@@ -91,7 +93,7 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-gray-50 hover:bg-white"
-                  placeholder="Enter your password"
+                  placeholder={t('auth.password')}
                 />
               </div>
             </div>
@@ -104,17 +106,17 @@ export default function AdminLoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Signing in…
+                  {t('auth.signingIn')}
                 </>
               ) : (
-                'Sign in'
+                t('auth.signIn')
               )}
             </button>
           </form>
         </div>
 
         <p className="text-center mt-6 text-xs text-gray-400">
-          Community Portal · Admin Access Only
+          {t('auth.adminOnly')}
         </p>
       </motion.div>
     </div>

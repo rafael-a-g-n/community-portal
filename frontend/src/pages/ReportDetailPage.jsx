@@ -14,11 +14,13 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { useTranslation } from 'react-i18next';
 
 export default function ReportDetailPage() {
   const { settings } = useSiteSettings();
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,19 +33,19 @@ export default function ReportDetailPage() {
         const data = await reportService.getReport(id);
         setReport(data);
       } catch {
-        setError('Report not found or failed to load.');
+        setError(t('common.error'));
       } finally {
         setLoading(false);
       }
     }
     loadReport();
-  }, [id]);
+  }, [id, t]);
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-40" data-testid="detail-loader">
         <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mb-4" />
-        <p className="text-gray-500 font-medium">Loading report details...</p>
+        <p className="text-gray-500 font-medium">{t('common.loading')}</p>
       </div>
     );
   }
@@ -52,13 +54,13 @@ export default function ReportDetailPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center" data-testid="detail-error">
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
-        <p className="text-gray-600 mb-8">{error || 'Report not found.'}</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('common.error')}</h2>
+        <p className="text-gray-600 mb-8">{error || t('admin.noReports')}</p>
         <button
           onClick={() => navigate('/')}
           className="px-8 py-3 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 transition-all"
         >
-          Back to Home
+          {t('common.back')}
         </button>
       </div>
     );
@@ -74,7 +76,7 @@ export default function ReportDetailPage() {
         className="flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600 mb-8 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
-        Back to Reports
+        {t('common.back')}
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -123,9 +125,9 @@ export default function ReportDetailPage() {
                     <Calendar className="w-5 h-5 text-gray-400" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Reported On</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{t('admin.table.date')}</p>
                     <p className="text-sm font-semibold text-gray-700">
-                      {new Date(report.created_at).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                      {new Date(report.created_at).toLocaleDateString(i18n.language, { dateStyle: 'long' })}
                     </p>
                   </div>
                 </div>
@@ -134,9 +136,9 @@ export default function ReportDetailPage() {
                     <Clock className="w-5 h-5 text-gray-400" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Last Updated</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{(i18n.language === 'pt' ? 'Atualizado' : 'Updated')}</p>
                     <p className="text-sm font-semibold text-gray-700">
-                      {new Date(report.updated_at).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                      {new Date(report.updated_at).toLocaleDateString(i18n.language, { dateStyle: 'long' })}
                     </p>
                   </div>
                 </div>
@@ -144,7 +146,7 @@ export default function ReportDetailPage() {
             </div>
           </motion.div>
 
-          {/* Resolution Comment — shown to all users when present */}
+          {/* Resolution Comment ?" shown to all users when present */}
           {report.resolution_comment && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -179,12 +181,9 @@ export default function ReportDetailPage() {
             className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100"
           >
             <h3 className="font-bold text-gray-900 mb-4 text-sm uppercase tracking-wider text-gray-500">
-              Current Status
+              {t('form.status')}
             </h3>
             <StatusBadge status={report.status} />
-            <p className="text-xs text-gray-400 mt-4 leading-relaxed">
-              Status updates are managed by the Community Portal administration team.
-            </p>
           </motion.div>
 
           {/* Contact Card */}
@@ -200,7 +199,7 @@ export default function ReportDetailPage() {
                 {settings.detail_support_body}
               </p>
               <button className="w-full py-3 bg-white text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition-colors">
-                Contact Support
+                {(i18n.language === 'pt' ? 'Contactar Suporte' : 'Contact Support')}
               </button>
             </div>
             <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-indigo-500 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-500" />

@@ -61,5 +61,35 @@
   "home": {
     "latestReports": "Latest Reports",
     "viewDetail": "View Details"
+  },
+  "auth": {
+    "adminPortal": "Admin Portal",
+    "signInToManage": "Sign in to manage community reports",
+    "username": "Username",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in...",
+    "invalidCredentials": "Invalid username or password.",
+    "serverError": "Unable to connect to the server. Please try again.",
+    "adminOnly": "Community Portal · Admin Access Only"
+  },
+  "createReport": {
+    "title": "Submit a New Report",
+    "subtitle": "Provide as much detail as possible to help us resolve the issue quickly.",
+    "successTitle": "Report Submitted!",
+    "successBody": "Thank you for helping your community. Redirecting you to the home page...",
+    "fieldRequired": "Please fill in all required fields.",
+    "submitError": "Failed to create report. Please try again.",
+    "issueTitleLabel": "Issue Title",
+    "issueTitlePlaceholder": "e.g., Broken street light at Oak St",
+    "categoryLabel": "Category",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Describe the issue in detail...",
+    "photoLabel": "Photo (Optional)",
+    "uploadFile": "Upload a file",
+    "dragDrop": "or drag and drop",
+    "fileLimits": "PNG, JPG, GIF up to 10MB",
+    "submitting": "Submitting...",
+    "submitButton": "Submit Report"
   }
 }

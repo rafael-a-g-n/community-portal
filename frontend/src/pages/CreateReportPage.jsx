@@ -4,9 +4,11 @@ import axios from 'axios';
 import { reportService } from '../services/reportService';
 import { Camera, Upload, AlertCircle, Loader2, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 
 export default function CreateReportPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchingCategories, setFetchingCategories] = useState(true);
@@ -27,13 +29,13 @@ export default function CreateReportPage() {
         const data = await reportService.getCategories();
         setCategories(data);
       } catch (err) {
-        setError('Failed to load categories.');
+        setError(t('createReport.submitError'));
       } finally {
         setFetchingCategories(false);
       }
     }
     loadCategories();
-  }, []);
+  }, [t]);
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -50,7 +52,7 @@ export default function CreateReportPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title || !formData.description || !formData.category) {
-      setError('Please fill in all required fields.');
+      setError(t('createReport.fieldRequired'));
       return;
     }
 
@@ -82,7 +84,7 @@ export default function CreateReportPage() {
           }
         }
       }
-      setError('Failed to create report. Please try again.');
+      setError(t('createReport.submitError'));
     } finally {
       setLoading(false);
     }
@@ -99,8 +101,8 @@ export default function CreateReportPage() {
           <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-10 h-10 text-emerald-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Report Submitted!</h2>
-          <p className="text-gray-600 mb-8">Thank you for helping your community. Redirecting you to the home page...</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('createReport.successTitle')}</h2>
+          <p className="text-gray-600 mb-8">{t('createReport.successBody')}</p>
           <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
             <motion.div 
               initial={{ width: 0 }}
@@ -121,14 +123,14 @@ export default function CreateReportPage() {
         className="flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600 mb-8 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
-        Back
+        {t('common.back')}
       </button>
 
       <div className="bg-white rounded-3xl shadow-xl shadow-indigo-50/50 border border-gray-100 overflow-hidden">
         <div className="p-8 sm:p-12">
           <div className="mb-10">
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Submit a New Report</h1>
-            <p className="text-gray-500">Provide as much detail as possible to help us resolve the issue quickly.</p>
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t('createReport.title')}</h1>
+            <p className="text-gray-500">{t('createReport.subtitle')}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8" data-testid="create-report-form">
@@ -143,14 +145,14 @@ export default function CreateReportPage() {
               {/* Title */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Issue Title <span className="text-red-500">*</span>
+                  {t('createReport.issueTitleLabel')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g., Broken street light at Oak St"
+                  placeholder={t('createReport.issueTitlePlaceholder')}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all"
                 />
               </div>
@@ -158,11 +160,11 @@ export default function CreateReportPage() {
               {/* Category */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Category <span className="text-red-500">*</span>
+                  {t('createReport.categoryLabel')} <span className="text-red-500">*</span>
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {fetchingCategories ? (
-                    <div className="col-span-full py-4 text-center text-gray-400 text-sm">Loading categories...</div>
+                    <div className="col-span-full py-4 text-center text-gray-400 text-sm">{t('common.loading')}</div>
                   ) : (
                     categories.map((cat) => (
                       <button
@@ -185,14 +187,14 @@ export default function CreateReportPage() {
               {/* Description */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Description <span className="text-red-500">*</span>
+                  {t('createReport.descriptionLabel')} <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   required
                   rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Describe the issue in detail..."
+                  placeholder={t('createReport.descriptionPlaceholder')}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all resize-none"
                 />
               </div>
@@ -200,7 +202,7 @@ export default function CreateReportPage() {
               {/* Image Upload */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Photo (Optional)
+                  {t('createReport.photoLabel')}
                 </label>
                 <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-200 border-dashed rounded-2xl hover:border-indigo-400 transition-colors group">
                   {imagePreview ? (
@@ -219,12 +221,12 @@ export default function CreateReportPage() {
                       <Camera className="mx-auto h-12 w-12 text-gray-400 group-hover:text-indigo-500 transition-colors" />
                       <div className="flex text-sm text-gray-600">
                         <label className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none">
-                          <span>Upload a file</span>
+                          <span>{t('createReport.uploadFile')}</span>
                           <input type="file" className="sr-only" accept="image/*" onChange={handleImageChange} />
                         </label>
-                        <p className="pl-1">or drag and drop</p>
+                        <p className="pl-1">{t('createReport.dragDrop')}</p>
                       </div>
-                      <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                      <p className="text-xs text-gray-500">{t('createReport.fileLimits')}</p>
                     </div>
                   )}
                 </div>
@@ -240,12 +242,12 @@ export default function CreateReportPage() {
                 {loading ? (
                   <>
                     <Loader2 className="animate-spin -ml-1 mr-3 h-6 w-6 text-white" />
-                    Submitting...
+                    {t('createReport.submitting')}
                   </>
                 ) : (
                   <>
                     <Upload className="-ml-1 mr-3 h-6 w-6" />
-                    Submit Report
+                    {t('createReport.submitButton')}
                   </>
                 )}
               </button>

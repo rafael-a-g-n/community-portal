@@ -61,5 +61,35 @@
   "home": {
     "latestReports": "Últimos Relatos",
     "viewDetail": "Ver Detalhes"
+  },
+  "auth": {
+    "adminPortal": "Portal de Administração",
+    "signInToManage": "Inicie sessão para gerir os relatos comunitários",
+    "username": "Utilizador",
+    "password": "Palavra-passe",
+    "signIn": "Entrar",
+    "signingIn": "A entrar...",
+    "invalidCredentials": "Utilizador ou palavra-passe inválidos.",
+    "serverError": "Não foi possível ligar ao servidor. Por favor tente novamente.",
+    "adminOnly": "Portal Comunitário · Acesso restrito a administradores"
+  },
+  "createReport": {
+    "title": "Submeter Novo Relato",
+    "subtitle": "Forneça o máximo de detalhes possível para nos ajudar a resolver o problema rapidamente.",
+    "successTitle": "Relato Submetido!",
+    "successBody": "Obrigado por ajudar a sua comunidade. A redirecionar para a página inicial...",
+    "fieldRequired": "Por favor preencha todos os campos obrigatórios.",
+    "submitError": "Falha ao criar o relato. Por favor tente novamente.",
+    "issueTitleLabel": "Título da Ocorrência",
+    "issueTitlePlaceholder": "ex: Lâmpada de rua fundida na Rua do Carvalho",
+    "categoryLabel": "Categoria",
+    "descriptionLabel": "Descrição",
+    "descriptionPlaceholder": "Descreva o problema em detalhe...",
+    "photoLabel": "Foto (Opcional)",
+    "uploadFile": "Carregar um ficheiro",
+    "dragDrop": "ou arraste e solte",
+    "fileLimits": "PNG, JPG, GIF até 10MB",
+    "submitting": "A submeter...",
+    "submitButton": "Submeter Relato"
   }
 }

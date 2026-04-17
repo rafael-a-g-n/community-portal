@@ -22,6 +22,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
 import { updateSettings } from '../services/settingsService';
+import { useTranslation } from 'react-i18next';
 
 const STATUS_CONFIG = {
   open: {
@@ -39,10 +40,11 @@ const STATUS_CONFIG = {
 };
 
 function StatusBadge({ status }) {
+  const { t } = useTranslation();
   const cfg = STATUS_CONFIG[status] ?? { label: status, className: 'bg-gray-100 text-gray-600' };
   return (
     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${cfg.className}`}>
-      {cfg.label}
+      {t(`status.${status}`)}
     </span>
   );
 }
@@ -58,6 +60,8 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
+
 
   const handleSave = async () => {
     setSaving(true);
@@ -117,13 +121,13 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
         {/* Drawer Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <div>
-            <h2 className="font-bold text-gray-900 text-lg">Edit Report</h2>
+            <h2 className="font-bold text-gray-900 text-lg">{t('admin.editReport')}</h2>
             <p className="text-xs text-gray-400 mt-0.5 truncate max-w-xs">{report.title}</p>
           </div>
           <button
             onClick={onClose}
             className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Close drawer"
+            aria-label={t('common.cancel')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -144,7 +148,7 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
 
           {/* Title input */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Title</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">{t('form.title')}</label>
             <input
               type="text"
               value={title}
@@ -155,7 +159,7 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
 
           {/* Description input */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Description</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">{t('form.description')}</label>
             <textarea
               rows={4}
               value={description}
@@ -166,14 +170,14 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
 
           {/* Category Select */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">{t('form.category')}</label>
             <div className="relative">
               <select
                 value={category || ''}
                 onChange={(e) => setCategory(Number(e.target.value))}
                 className="w-full pl-4 pr-10 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white appearance-none cursor-pointer"
               >
-                <option value="">Select Category</option>
+                <option value="">{t('admin.manageCategories')}</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -186,7 +190,7 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
 
           {/* Status Selector */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-3">Status</label>
+            <label className="block text-sm font-bold text-gray-700 mb-3">{t('form.status')}</label>
             <div className="space-y-2">
               {['open', 'in_progress', 'resolved'].map((s) => {
                 const cfg = STATUS_CONFIG[s];
@@ -200,7 +204,7 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
                         : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50'
                     }`}
                   >
-                    {cfg.label}
+                    {t(`status.${s}`)}
                     {status === s && <CheckCircle2 className="w-4 h-4" />}
                   </button>
                 );
@@ -211,19 +215,19 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
           {/* Resolution Comment */}
           <div>
             <label htmlFor="resolution-comment" className="block text-sm font-bold text-gray-700 mb-2">
-              Resolution Comment
-              <span className="ml-1 font-normal text-gray-400">(optional)</span>
+              {t('form.resolutionComment')}
+              <span className="ml-1 font-normal text-gray-400">({t('common.optional')})</span>
             </label>
             <textarea
               id="resolution-comment"
               rows={5}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="Describe the action taken or resolution details…"
+              placeholder={t('form.resolutionPlaceholder')}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-gray-50"
             />
             <p className="text-xs text-gray-400 mt-1">
-              This comment will be publicly visible on the report page.
+              {t('form.publicVisibilityNote')}
             </p>
           </div>
         </div>
@@ -234,7 +238,7 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
             onClick={handleDelete}
             disabled={saving || deleting}
             className="flex items-center justify-center px-4 py-3 bg-red-100 text-red-700 font-bold rounded-xl hover:bg-red-200 disabled:opacity-50 transition-all border border-red-200"
-            title="Delete Report"
+            title={t('common.delete')}
             data-testid="delete-btn"
           >
             {deleting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Trash2 className="w-5 h-5" />}
@@ -247,9 +251,9 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
             className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-100"
           >
             {saving ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</>
+              <><Loader2 className="w-4 h-4 animate-spin" /> {t('common.saving')}</>
             ) : (
-              <><Save className="w-4 h-4" /> Save Changes</>
+              <><Save className="w-4 h-4" /> {t('common.save')}</>
             )}
           </button>
         </div>
@@ -264,6 +268,8 @@ function SiteSettingsManager() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const { t } = useTranslation();
+
 
   // Initialize form data from context settings
   useEffect(() => {
@@ -310,7 +316,7 @@ function SiteSettingsManager() {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold text-gray-900">Site Settings CMS</h3>
+        <h3 className="text-lg font-bold text-gray-900">{t('admin.siteSettingsCms')}</h3>
         <button
           onClick={handleSave}
           disabled={saving}
@@ -318,7 +324,7 @@ function SiteSettingsManager() {
           className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-colors"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Save Changes
+          {t('common.save')}
         </button>
       </div>
 
@@ -368,6 +374,8 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
   const [editIcon, setEditIcon] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
+
 
   const [newName, setNewName] = useState('');
   const [newIcon, setNewIcon] = useState('');
@@ -432,7 +440,7 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold text-gray-900">Manage Categories</h3>
+        <h3 className="text-lg font-bold text-gray-900">{t('admin.manageCategories')}</h3>
       </div>
 
       {error && (
@@ -446,14 +454,14 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
       <div className="flex flex-wrap items-center gap-3 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-200">
         <input
           type="text"
-          placeholder="New Category Name"
+          placeholder={t('admin.newCategoryName')}
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <input
           type="text"
-          placeholder="Icon (e.g. 🌳, 🛣️)"
+          placeholder={t('admin.iconEmoji')}
           value={newIcon}
           onChange={(e) => setNewIcon(e.target.value)}
           className="w-32 px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
@@ -464,7 +472,7 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
           className="flex items-center justify-center px-4 py-2 text-sm font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
         >
           {creating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-          Add Category
+          {t('admin.addCategory')}
         </button>
       </div>
 
@@ -484,7 +492,7 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
                   type="text"
                   value={editIcon}
                   onChange={(e) => setEditIcon(e.target.value)}
-                  placeholder="Icon emoji"
+                  placeholder={t('admin.iconEmoji')}
                   className="w-24 px-3 py-1.5 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 <div className="flex items-center gap-2">
@@ -493,14 +501,14 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
                     disabled={saving}
                     className="text-xs font-bold px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 disabled:opacity-50"
                   >
-                    Save
+                    {t('common.save')}
                   </button>
                   <button
                     onClick={cancelEdit}
                     disabled={saving}
                     className="text-xs font-bold px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                 </div>
               </div>
@@ -510,7 +518,7 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
                   <span className="text-xl">{cat.icon || '📌'}</span>
                   <div>
                     <p className="font-bold text-gray-900">{cat.name}</p>
-                    <p className="text-xs text-gray-400">Slug: {cat.slug}</p>
+                    <p className="text-xs text-gray-400">{t('admin.categorySlug')}: {cat.slug}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -518,7 +526,7 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
                     onClick={() => startEdit(cat)}
                     className="px-3 py-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg"
                   >
-                    Edit
+                    {t('common.manage')}
                   </button>
                   <button
                     onClick={() => handleDelete(cat.id)}
@@ -533,7 +541,7 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
           </div>
         ))}
         {categories.length === 0 && (
-          <p className="text-center text-sm text-gray-500 py-4">No categories found.</p>
+          <p className="text-center text-sm text-gray-500 py-4">{t('admin.noReports')}</p>
         )}
       </div>
     </div>
@@ -554,6 +562,8 @@ export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const PAGE_SIZE = 10;
+  const { t } = useTranslation();
+
 
   // Redirect if not logged in
   useEffect(() => {
@@ -638,9 +648,9 @@ export default function AdminDashboard() {
               <ClipboardList className="w-4 h-4 text-white" />
             </div>
             <div>
-              <span className="font-extrabold text-gray-900 text-lg">Admin Dashboard</span>
+              <span className="font-extrabold text-gray-900 text-lg">{t('admin.dashboard')}</span>
               <span className="ml-2 text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
-                {totalCount} Reports
+                {totalCount} {t('admin.reportsTab')}
               </span>
             </div>
           </div>
@@ -657,7 +667,7 @@ export default function AdminDashboard() {
               className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
             >
               <LogOut className="w-4 h-4" />
-              Sign out
+              {t('nav.logout')}
             </button>
           </div>
         </div>
@@ -675,7 +685,7 @@ export default function AdminDashboard() {
             }`}
           >
             <LayoutDashboard className="w-4 h-4" />
-            Reports
+            {t('admin.reportsTab')}
           </button>
           <button
             onClick={() => setActiveTab('categories')}
@@ -686,7 +696,7 @@ export default function AdminDashboard() {
             }`}
           >
             <Tag className="w-4 h-4" />
-            Categories
+            {t('admin.categoriesTab')}
           </button>
           <button
             onClick={() => setActiveTab('settings')}
@@ -697,7 +707,7 @@ export default function AdminDashboard() {
             }`}
           >
             <Settings className="w-4 h-4" />
-            Site Settings
+            {t('admin.settingsTab')}
           </button>
         </div>
       </div>
@@ -712,12 +722,12 @@ export default function AdminDashboard() {
                   value={statusFilter}
                   onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
                   className="pl-4 pr-10 py-2.5 text-sm font-semibold border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
-                  aria-label="Filter by status"
+                  aria-label={t('status.all')}
                 >
-                  <option value="">All statuses</option>
-                  <option value="open">Open</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="resolved">Resolved</option>
+                  <option value="">{t('status.all')}</option>
+                  <option value="open">{t('status.open')}</option>
+                  <option value="in_progress">{t('status.in_progress')}</option>
+                  <option value="resolved">{t('status.resolved')}</option>
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
               </div>
@@ -726,7 +736,7 @@ export default function AdminDashboard() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search admin reports..."
+                  placeholder={t('common.search')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -750,17 +760,17 @@ export default function AdminDashboard() {
               ) : reports.length === 0 ? (
                 <div className="text-center py-24 text-gray-400" data-testid="no-reports">
                   <ClipboardList className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p className="font-semibold">No reports found</p>
+                  <p className="font-semibold">{t('admin.noReports')}</p>
                 </div>
               ) : (
                 <table className="w-full text-sm" data-testid="reports-table">
                   <thead className="bg-gray-50 border-b border-gray-100">
                     <tr>
-                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Title</th>
-                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Category</th>
-                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
-                      <th className="px-5 py-3.5 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Action</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{t('admin.table.title')}</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{t('admin.table.category')}</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{t('admin.table.status')}</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{t('admin.table.date')}</th>
+                      <th className="px-5 py-3.5 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">{t('admin.table.action')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
@@ -789,7 +799,7 @@ export default function AdminDashboard() {
                             data-testid={`edit-btn-${report.id}`}
                             className="px-3 py-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-100"
                           >
-                            Manage
+                            {t('common.manage')}
                           </button>
                         </td>
                       </tr>
