@@ -142,4 +142,59 @@ describe('AdminDashboard', () => {
       expect(screen.getByTestId('no-reports')).toBeInTheDocument();
     });
   });
+
+  it('can switch to Categories tab and render categories', async () => {
+    vi.spyOn(reportService, 'getReports').mockResolvedValue({ results: mockReports, count: 2 });
+    vi.spyOn(reportService, 'getCategories').mockResolvedValue([{ id: 1, name: 'Roads', slug: 'roads', icon: '🛣️' }]);
+    
+    renderDashboard();
+    
+    // Switch tab
+    fireEvent.click(screen.getByText('Categories'));
+    
+    await waitFor(() => {
+      expect(screen.getByText('Manage Categories')).toBeInTheDocument();
+      expect(screen.getByText('Roads')).toBeInTheDocument();
+      expect(screen.getByText('🛣️')).toBeInTheDocument();
+    });
+  });
+
+  it('can add a new category', async () => {
+    vi.spyOn(reportService, 'getReports').mockResolvedValue({ results: [], count: 0 });
+    vi.spyOn(reportService, 'getCategories').mockResolvedValue([]);
+    vi.spyOn(reportService, 'createCategory').mockResolvedValue({ id: 99, name: 'Graffiti', icon: '🎨', slug: 'graffiti' });
+
+    renderDashboard();
+    fireEvent.click(screen.getByText('Categories'));
+
+    await waitFor(() => screen.getByPlaceholderText('New Category Name'));
+    
+    fireEvent.change(screen.getByPlaceholderText('New Category Name'), { target: { value: 'Graffiti' } });
+    fireEvent.change(screen.getByPlaceholderText('Icon (e.g. 🌳, 🛣️)'), { target: { value: '🎨' } });
+    
+    fireEvent.click(screen.getByText('Add Category'));
+
+    await waitFor(() => {
+      expect(reportService.createCategory).toHaveBeenCalledWith({ name: 'Graffiti', icon: '🎨' });
+      expect(screen.getByText('Graffiti')).toBeInTheDocument();
+    });
+  });
+
+  it('can delete a category', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(reportService, 'getReports').mockResolvedValue({ results: [], count: 0 });
+    vi.spyOn(reportService, 'getCategories').mockResolvedValue([{ id: 1, name: 'Roads', slug: 'roads', icon: '🛣️' }]);
+    vi.spyOn(reportService, 'deleteCategory').mockResolvedValue();
+
+    renderDashboard();
+    fireEvent.click(screen.getByText('Categories'));
+
+    await waitFor(() => screen.getByTitle('Delete Category'));
+    fireEvent.click(screen.getByTitle('Delete Category'));
+
+    await waitFor(() => {
+      expect(reportService.deleteCategory).toHaveBeenCalledWith(1);
+      expect(screen.queryByText('Roads')).not.toBeInTheDocument();
+    });
+  });
 });
