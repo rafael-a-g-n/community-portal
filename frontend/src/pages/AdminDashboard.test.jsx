@@ -41,6 +41,7 @@ describe('AdminDashboard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
+    vi.spyOn(reportService, 'getCategories').mockResolvedValue([{ id: 1, name: 'Roads' }]);
   });
 
   it('redirects to /admin if not authenticated', () => {
@@ -106,6 +107,30 @@ describe('AdminDashboard', () => {
     await waitFor(() => {
       expect(reportService.updateReport).toHaveBeenCalledWith('uuid-1', expect.any(Object));
       expect(screen.queryByTestId('edit-drawer')).not.toBeInTheDocument();
+    });
+  });
+
+  it('calls deleteReport and removes from list when delete is clicked', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(reportService, 'getReports').mockResolvedValue({
+      results: mockReports,
+      count: 2,
+    });
+    vi.spyOn(reportService, 'deleteReport').mockResolvedValue();
+    renderDashboard();
+
+    await waitFor(() => screen.getByTestId('reports-table'));
+    fireEvent.click(screen.getByTestId('edit-btn-uuid-1'));
+    await waitFor(() => screen.getByTestId('edit-drawer'));
+
+    fireEvent.click(screen.getByTestId('delete-btn'));
+
+    await waitFor(() => {
+      expect(reportService.deleteReport).toHaveBeenCalledWith('uuid-1');
+      expect(screen.queryByTestId('edit-drawer')).not.toBeInTheDocument();
+      // Should remove from table
+      expect(screen.queryByText('Broken pavement')).not.toBeInTheDocument();
+      expect(screen.getByText('Missing street sign')).toBeInTheDocument();
     });
   });
 

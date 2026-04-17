@@ -12,6 +12,7 @@ import {
   ClipboardList,
   X,
   Save,
+  Trash2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -39,10 +40,16 @@ function StatusBadge({ status }) {
   );
 }
 
-function EditDrawer({ report, onClose, onSaved }) {
+function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
+  const [title, setTitle] = useState(report.title);
+  const [description, setDescription] = useState(report.description);
+  const [category, setCategory] = useState(
+    typeof report.category === 'object' ? report.category.id : report.category
+  );
   const [status, setStatus] = useState(report.status);
   const [comment, setComment] = useState(report.resolution_comment ?? '');
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSave = async () => {
@@ -50,6 +57,9 @@ function EditDrawer({ report, onClose, onSaved }) {
     setError(null);
     try {
       const updated = await reportService.updateReport(report.id, {
+        title,
+        description,
+        category,
         status,
         resolution_comment: comment,
       });
@@ -61,6 +71,23 @@ function EditDrawer({ report, onClose, onSaved }) {
       setSaving(false);
     }
   };
+
+  const handleDelete = async () => {
+    if (!window.confirm('Are you certain you want to delete this report? This is permanent.')) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      await reportService.deleteReport(report.id);
+      onDeleted(report.id);
+      onClose();
+    } catch {
+      setError('Failed to delete report.');
+      setDeleting(false);
+    }
+  };
+
 
   return (
     <motion.div
@@ -108,6 +135,48 @@ function EditDrawer({ report, onClose, onSaved }) {
             </div>
           )}
 
+          {/* Title input */}
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">Title</label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+            />
+          </div>
+
+          {/* Description input */}
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">Description</label>
+            <textarea
+              rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+            />
+          </div>
+
+          {/* Category Select */}
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
+            <div className="relative">
+              <select
+                value={category || ''}
+                onChange={(e) => setCategory(Number(e.target.value))}
+                className="w-full pl-4 pr-10 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white appearance-none cursor-pointer"
+              >
+                <option value="">Select Category</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
+          </div>
+
           {/* Status Selector */}
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-3">Status</label>
@@ -153,12 +222,22 @@ function EditDrawer({ report, onClose, onSaved }) {
         </div>
 
         {/* Drawer Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 bg-gray-50">
+        <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex gap-3">
+          <button
+            onClick={handleDelete}
+            disabled={saving || deleting}
+            className="flex items-center justify-center px-4 py-3 bg-red-100 text-red-700 font-bold rounded-xl hover:bg-red-200 disabled:opacity-50 transition-all border border-red-200"
+            title="Delete Report"
+            data-testid="delete-btn"
+          >
+            {deleting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Trash2 className="w-5 h-5" />}
+          </button>
+          
           <button
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || deleting}
             data-testid="save-btn"
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-100"
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-100"
           >
             {saving ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</>
@@ -181,6 +260,7 @@ export default function AdminDashboard() {
   const [selectedReport, setSelectedReport] = useState(null);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const [categories, setCategories] = useState([]);
   const PAGE_SIZE = 10;
 
   // Redirect if not logged in
@@ -196,9 +276,13 @@ export default function AdminDashboard() {
     try {
       const params = { page };
       if (statusFilter) params.status = statusFilter;
-      const data = await reportService.getReports(params);
-      setReports(data.results ?? []);
-      setTotalCount(data.count ?? 0);
+      const [reportsData, catsData] = await Promise.all([
+        reportService.getReports(params),
+        reportService.getCategories()
+      ]);
+      setReports(reportsData.results ?? []);
+      setTotalCount(reportsData.count ?? 0);
+      setCategories(catsData ?? []);
     } catch {
       setError('Failed to load reports. Please refresh.');
     } finally {
@@ -217,6 +301,10 @@ export default function AdminDashboard() {
 
   const handleReportSaved = (updated) => {
     setReports((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+  };
+
+  const handleReportDeleted = (deletedId) => {
+    setReports((prev) => prev.filter((r) => r.id !== deletedId));
   };
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
@@ -369,8 +457,10 @@ export default function AdminDashboard() {
         {selectedReport && (
           <EditDrawer
             report={selectedReport}
+            categories={categories}
             onClose={() => setSelectedReport(null)}
             onSaved={handleReportSaved}
+            onDeleted={handleReportDeleted}
           />
         )}
       </AnimatePresence>
