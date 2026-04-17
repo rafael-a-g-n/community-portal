@@ -6,6 +6,7 @@ from django.utils.text import slugify
 
 class Category(models.Model):
     name = models.CharField(max_length=120, unique=True)
+    name_pt = models.CharField(max_length=120, default="", blank=True)
     slug = models.SlugField(max_length=140, unique=True, blank=True)
     icon = models.CharField(max_length=120, blank=True)
 
