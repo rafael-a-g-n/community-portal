@@ -2,7 +2,7 @@ from django.db.models import QuerySet
 from django.db.models.deletion import ProtectedError
 
 from rest_framework.exceptions import ValidationError
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
@@ -167,6 +167,12 @@ class CategoryAdminDetailView(RetrieveUpdateDestroyAPIView):
                 location=OpenApiParameter.QUERY,
                 description="Allowed values: created_at, -created_at, status, -status.",
             ),
+            OpenApiParameter(
+                name="search",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Search by title or description.",
+            ),
         ],
         responses={
             200: OpenApiResponse(description="Reports retrieved successfully."),
@@ -193,8 +199,9 @@ class ReportListCreateView(ListCreateAPIView):
     queryset = Report.objects.select_related("category").all()
     serializer_class = ReportSerializer
     permission_classes = [AllowAny]
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = ReportFilter
+    search_fields = ["title", "description"]
     ordering_fields = ["created_at", "status"]
     ordering = ["-created_at"]
 

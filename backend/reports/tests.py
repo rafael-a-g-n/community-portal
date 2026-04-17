@@ -172,6 +172,40 @@ class TestReportFiltering:
         response = api_client.get("/api/v1/reports/?status=not-a-real-status")
         assert response.status_code == 400
 
+    def test_report_list_search_by_keyword(self, api_client):
+        cat = Category.objects.create(name="Public Space", icon="bench")
+        Report.objects.create(
+            title="Broken park bench",
+            description="The wooden bench at Central Park is broken.",
+            category=cat,
+            status=Report.Status.OPEN
+        )
+        Report.objects.create(
+            title="Graffiti on wall",
+            description="Spray paint on the community center wall.",
+            category=cat,
+            status=Report.Status.OPEN
+        )
+
+        # Search for "bench"
+        response = api_client.get("/api/v1/reports/?search=bench")
+        assert response.status_code == 200
+        data = response.json()["results"]
+        assert len(data) == 1
+        assert "bench" in data[0]["title"]
+
+        # Search for "community"
+        response = api_client.get("/api/v1/reports/?search=community")
+        assert response.status_code == 200
+        data = response.json()["results"]
+        assert len(data) == 1
+        assert "community" in data[0]["description"]
+
+        # Search for something that shouldn't match
+        response = api_client.get("/api/v1/reports/?search=pothole")
+        assert response.status_code == 200
+        assert len(response.json()["results"]) == 0
+
 
 @pytest.mark.django_db
 class TestReportOrdering:
