@@ -254,7 +254,9 @@ class TestReportDetailPatchPermissions:
             f"/api/v1/reports/{report.id}/",
             {
                 "status": Report.Status.RESOLVED,
-                "resolution_comment": "We successfully verified and replaced the missing street sign today."
+                "resolution_comment": (
+                    "We successfully verified and replaced the missing street sign today."
+                ),
             },
             format="json",
         )
@@ -262,7 +264,9 @@ class TestReportDetailPatchPermissions:
 
         report.refresh_from_db()
         assert report.status == Report.Status.RESOLVED
-        assert report.resolution_comment == "We successfully verified and replaced the missing street sign today."
+        assert report.resolution_comment == (
+            "We successfully verified and replaced the missing street sign today."
+        )
 
 
 @pytest.mark.django_db
@@ -348,3 +352,181 @@ class TestReportPhotoUploadValidation:
 
         response = api_client.post("/api/v1/reports/", payload, format="multipart")
         assert response.status_code == 201
+
+
+@pytest.mark.django_db
+class TestReportDelete:
+    """Test DELETE /api/v1/reports/<uuid>/ permission and behaviour."""
+
+    def test_delete_report_as_anonymous_returns_401(self, api_client):
+        """Anonymous users must not be able to delete reports."""
+        category = Category.objects.create(name="Parks", icon="🌳")
+        report = Report.objects.create(
+            title="Vandalised bench",
+            description="Park bench has been vandalised and needs replacing.",
+            category=category,
+        )
+        response = api_client.delete(f"/api/v1/reports/{report.id}/")
+        assert response.status_code in [401, 403]
+        assert Report.objects.filter(id=report.id).exists()
+
+    def test_delete_report_as_admin_returns_204(self, api_client):
+        """Admin users can delete reports; object is removed from the database."""
+        User = get_user_model()
+        admin = User.objects.create_user(
+            username="del_admin", password="pass-123", is_staff=True
+        )
+        api_client.force_authenticate(user=admin)
+
+        category = Category.objects.create(name="Roads", icon="🛣️")
+        report = Report.objects.create(
+            title="Pothole on main road",
+            description="Large pothole causing danger for cyclists near the roundabout.",
+            category=category,
+        )
+        response = api_client.delete(f"/api/v1/reports/{report.id}/")
+        assert response.status_code == 204
+        assert not Report.objects.filter(id=report.id).exists()
+
+    def test_delete_nonexistent_report_as_admin_returns_404(self, api_client):
+        """Attempting to delete a report that does not exist returns 404."""
+        User = get_user_model()
+        admin = User.objects.create_user(
+            username="del_admin2", password="pass-123", is_staff=True
+        )
+        api_client.force_authenticate(user=admin)
+        import uuid as uuid_mod
+        fake_id = uuid_mod.uuid4()
+        response = api_client.delete(f"/api/v1/reports/{fake_id}/")
+        assert response.status_code == 404
+
+
+@pytest.mark.django_db
+class TestCategoryAdminCreate:
+    """Test POST /api/v1/categories/ permission and validation."""
+
+    def test_create_category_as_anonymous_returns_401(self, api_client):
+        """Anonymous users cannot create categories."""
+        response = api_client.post(
+            "/api/v1/categories/", {"name": "Utilities", "icon": "⚡"}, format="json"
+        )
+        assert response.status_code in [401, 403]
+
+    def test_create_category_as_admin_returns_201(self, api_client):
+        """Admin users can create categories; slug is generated automatically."""
+        User = get_user_model()
+        admin = User.objects.create_user(
+            username="cat_admin", password="pass-123", is_staff=True
+        )
+        api_client.force_authenticate(user=admin)
+        response = api_client.post(
+            "/api/v1/categories/",
+            {"name": "Utilities", "icon": "⚡"},
+            format="json",
+        )
+        assert response.status_code == 201
+        data = response.json()
+        assert data["name"] == "Utilities"
+        assert "slug" in data
+
+    def test_create_category_with_short_name_returns_400(self, api_client):
+        """Category names shorter than 2 characters are rejected."""
+        User = get_user_model()
+        admin = User.objects.create_user(
+            username="cat_admin2", password="pass-123", is_staff=True
+        )
+        api_client.force_authenticate(user=admin)
+        response = api_client.post(
+            "/api/v1/categories/", {"name": "X", "icon": "🔧"}, format="json"
+        )
+        assert response.status_code == 400
+        assert "name" in response.json()
+
+    def test_create_category_strips_whitespace(self, api_client):
+        """Leading/trailing whitespace is stripped from name and icon."""
+        User = get_user_model()
+        admin = User.objects.create_user(
+            username="cat_admin3", password="pass-123", is_staff=True
+        )
+        api_client.force_authenticate(user=admin)
+        response = api_client.post(
+            "/api/v1/categories/",
+            {"name": "  Sanitation  ", "icon": "  🗑️  "},
+            format="json",
+        )
+        assert response.status_code == 201
+        assert response.json()["name"] == "Sanitation"
+
+
+@pytest.mark.django_db
+class TestCategoryAdminUpdate:
+    """Test PATCH /api/v1/categories/<pk>/ permission and validation."""
+
+    def test_update_category_name_as_admin_returns_200(self, api_client):
+        """Admin users can rename a category."""
+        User = get_user_model()
+        admin = User.objects.create_user(
+            username="up_admin", password="pass-123", is_staff=True
+        )
+        api_client.force_authenticate(user=admin)
+        category = Category.objects.create(name="Graffiti", icon="🎨")
+        response = api_client.patch(
+            f"/api/v1/categories/{category.pk}/",
+            {"name": "Vandalism"},
+            format="json",
+        )
+        assert response.status_code == 200
+        assert response.json()["name"] == "Vandalism"
+
+    def test_update_category_as_anonymous_returns_401(self, api_client):
+        """Anonymous users cannot update categories."""
+        category = Category.objects.create(name="Waste", icon="🗑️")
+        response = api_client.patch(
+            f"/api/v1/categories/{category.pk}/",
+            {"name": "Recycling"},
+            format="json",
+        )
+        assert response.status_code in [401, 403]
+
+
+@pytest.mark.django_db
+class TestCategoryAdminDelete:
+    """Test DELETE /api/v1/categories/<pk>/ — blocking and success paths."""
+
+    def test_delete_category_with_no_reports_returns_204(self, api_client):
+        """A category with no linked reports can be deleted."""
+        User = get_user_model()
+        admin = User.objects.create_user(
+            username="catdel_admin", password="pass-123", is_staff=True
+        )
+        api_client.force_authenticate(user=admin)
+        category = Category.objects.create(name="Unused", icon="❓")
+        response = api_client.delete(f"/api/v1/categories/{category.pk}/")
+        assert response.status_code == 204
+        assert not Category.objects.filter(pk=category.pk).exists()
+
+    def test_delete_category_with_linked_reports_returns_400(self, api_client):
+        """Deleting a category that has linked reports returns 400 with a message."""
+        User = get_user_model()
+        admin = User.objects.create_user(
+            username="catdel_admin2", password="pass-123", is_staff=True
+        )
+        api_client.force_authenticate(user=admin)
+        category = Category.objects.create(name="Lighting", icon="💡")
+        Report.objects.create(
+            title="Broken street lamp",
+            description="Street lamp has been broken for two weeks near the park entrance.",
+            category=category,
+        )
+        response = api_client.delete(f"/api/v1/categories/{category.pk}/")
+        assert response.status_code == 400
+        body = response.json()
+        assert "detail" in body
+        assert "Lighting" in body["detail"]
+        assert Category.objects.filter(pk=category.pk).exists()
+
+    def test_delete_category_as_anonymous_returns_401(self, api_client):
+        """Anonymous users cannot delete categories."""
+        category = Category.objects.create(name="Safety", icon="⚠️")
+        response = api_client.delete(f"/api/v1/categories/{category.pk}/")
+        assert response.status_code in [401, 403]
