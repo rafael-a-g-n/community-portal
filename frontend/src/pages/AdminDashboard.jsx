@@ -46,7 +46,7 @@ export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const PAGE_SIZE = 10;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
 
   // Redirect if not logged in

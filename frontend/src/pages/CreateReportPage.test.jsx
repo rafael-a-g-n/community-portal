@@ -17,10 +17,10 @@ describe('CreateReportPage', () => {
     renderWithRouter(<CreateReportPage />);
     
     await waitFor(() => {
-      expect(screen.getByText('Submit a New Report')).toBeInTheDocument();
+      expect(screen.getByText('createReport.title')).toBeInTheDocument();
     });
 
-    const titleInput = screen.getByPlaceholderText(/e.g., Broken street light/i);
+    const titleInput = screen.getByPlaceholderText('createReport.issueTitlePlaceholder');
     fireEvent.change(titleInput, { target: { value: 'Test Title' } });
     expect(titleInput.value).toBe('Test Title');
   });

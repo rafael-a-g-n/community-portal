@@ -21,18 +21,18 @@ describe('AdminLoginPage', () => {
 
   it('renders the login form', () => {
     renderWithRouter(<AdminLoginPage />);
-    expect(screen.getByText('Admin Portal')).toBeInTheDocument();
-    expect(screen.getByLabelText('Username')).toBeInTheDocument();
-    expect(screen.getByLabelText('Password')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+    expect(screen.getByText('auth.adminPortal')).toBeInTheDocument();
+    expect(screen.getByLabelText('auth.username')).toBeInTheDocument();
+    expect(screen.getByLabelText('auth.password')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /auth.signIn/i })).toBeInTheDocument();
   });
 
   it('navigates to dashboard on successful login', async () => {
     vi.spyOn(authService, 'login').mockResolvedValue('fake-token');
     renderWithRouter(<AdminLoginPage />);
 
-    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'admin' } });
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByLabelText('auth.username'), { target: { value: 'admin' } });
+    fireEvent.change(screen.getByLabelText('auth.password'), { target: { value: 'password123' } });
     fireEvent.submit(screen.getByTestId('login-form'));
 
     await waitFor(() => {
@@ -47,13 +47,13 @@ describe('AdminLoginPage', () => {
     });
     renderWithRouter(<AdminLoginPage />);
 
-    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'admin' } });
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'wrongpass' } });
+    fireEvent.change(screen.getByLabelText('auth.username'), { target: { value: 'admin' } });
+    fireEvent.change(screen.getByLabelText('auth.password'), { target: { value: 'wrongpass' } });
     fireEvent.submit(screen.getByTestId('login-form'));
 
     await waitFor(() => {
       expect(screen.getByTestId('login-error')).toHaveTextContent(
-        'Invalid username or password.'
+        'auth.invalidCredentials'
       );
     });
   });
@@ -62,13 +62,13 @@ describe('AdminLoginPage', () => {
     vi.spyOn(authService, 'login').mockRejectedValue({ response: { status: 500 } });
     renderWithRouter(<AdminLoginPage />);
 
-    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'admin' } });
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'pass' } });
+    fireEvent.change(screen.getByLabelText('auth.username'), { target: { value: 'admin' } });
+    fireEvent.change(screen.getByLabelText('auth.password'), { target: { value: 'pass' } });
     fireEvent.submit(screen.getByTestId('login-form'));
 
     await waitFor(() => {
       expect(screen.getByTestId('login-error')).toHaveTextContent(
-        'Unable to connect to the server.'
+        'auth.serverError'
       );
     });
   });

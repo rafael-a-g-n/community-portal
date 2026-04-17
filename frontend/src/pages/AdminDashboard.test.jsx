@@ -150,10 +150,10 @@ describe('AdminDashboard', () => {
     renderDashboard();
     
     // Switch tab
-    fireEvent.click(screen.getByText('Categories'));
+    fireEvent.click(screen.getByText('admin.categoriesTab'));
     
     await waitFor(() => {
-      expect(screen.getByText('Manage Categories')).toBeInTheDocument();
+      expect(screen.getByText('admin.manageCategories')).toBeInTheDocument();
       expect(screen.getByText('Roads')).toBeInTheDocument();
       expect(screen.getByText('🛣️')).toBeInTheDocument();
     });
@@ -165,17 +165,17 @@ describe('AdminDashboard', () => {
     vi.spyOn(reportService, 'createCategory').mockResolvedValue({ id: 99, name: 'Graffiti', icon: '🎨', slug: 'graffiti' });
 
     renderDashboard();
-    fireEvent.click(screen.getByText('Categories'));
+    fireEvent.click(screen.getByText('admin.categoriesTab'));
 
-    await waitFor(() => screen.getByPlaceholderText('New Category Name'));
+    await waitFor(() => screen.getByPlaceholderText('admin.newCategoryName'));
     
-    fireEvent.change(screen.getByPlaceholderText('New Category Name'), { target: { value: 'Graffiti' } });
-    fireEvent.change(screen.getByPlaceholderText('Icon (e.g. 🌳, 🛣️)'), { target: { value: '🎨' } });
+    fireEvent.change(screen.getByPlaceholderText('admin.newCategoryName'), { target: { value: 'Graffiti' } });
+    fireEvent.change(screen.getByPlaceholderText('admin.iconEmoji'), { target: { value: '🎨' } });
     
-    fireEvent.click(screen.getByText('Add Category'));
+    fireEvent.click(screen.getByText('admin.addCategory'));
 
     await waitFor(() => {
-      expect(reportService.createCategory).toHaveBeenCalledWith({ name: 'Graffiti', icon: '🎨' });
+      expect(reportService.createCategory).toHaveBeenCalledWith({ name: 'Graffiti', name_pt: '', icon: '🎨' });
       expect(screen.getByText('Graffiti')).toBeInTheDocument();
     });
   });
@@ -187,7 +187,7 @@ describe('AdminDashboard', () => {
     vi.spyOn(reportService, 'deleteCategory').mockResolvedValue();
 
     renderDashboard();
-    fireEvent.click(screen.getByText('Categories'));
+    fireEvent.click(screen.getByText('admin.categoriesTab'));
 
     await waitFor(() => screen.getByTitle('Delete Category'));
     fireEvent.click(screen.getByTitle('Delete Category'));
@@ -207,10 +207,10 @@ describe('AdminDashboard', () => {
     // so we should see "Community Portal".
     renderDashboard();
 
-    fireEvent.click(screen.getByText('Site Settings'));
+    fireEvent.click(screen.getByText('admin.settingsTab'));
 
     await waitFor(() => {
-      expect(screen.getByText('Site Settings CMS')).toBeInTheDocument();
+      expect(screen.getByText('admin.siteSettingsCms')).toBeInTheDocument();
     });
 
     const nameInputs = screen.getAllByDisplayValue('Community Portal'); 
@@ -233,7 +233,7 @@ describe('AdminDashboard', () => {
 
     await waitFor(() => screen.getByTestId('reports-table'));
 
-    const searchInput = screen.getByPlaceholderText('Search admin reports...');
+    const searchInput = screen.getByPlaceholderText('common.search');
     fireEvent.change(searchInput, { target: { value: 'pavement' } });
 
     // Wait for the 300ms debounce + buffer
