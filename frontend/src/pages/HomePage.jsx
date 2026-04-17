@@ -3,8 +3,10 @@ import { reportService } from '../services/reportService';
 import ReportCard from '../components/ReportCard';
 import { Filter, Search, Loader2, AlertCircle, ClipboardList } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
 export default function HomePage() {
+  const { settings } = useSiteSettings();
   const [reports, setReports] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,15 +43,15 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-4xl font-extrabold text-gray-900 sm:text-5xl tracking-tight mb-4"
         >
-          Community <span className="text-indigo-600">Report Hub</span>
+          {settings.hero_title}
         </motion.h1>
         <motion.p 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-lg text-gray-600 max-w-2xl mx-auto"
+          className="text-lg text-gray-600 max-w-2xl mx-auto whitespace-pre-wrap"
         >
-          Help us improve your neighborhood. Report issues, track progress, and stay informed about local improvements.
+          {settings.hero_subtitle}
         </motion.p>
       </div>
 
@@ -115,13 +117,13 @@ export default function HomePage() {
       ) : reports.length === 0 ? (
         <div className="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200" data-testid="empty-state">
           <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-gray-900 mb-2">No reports found</h3>
-          <p className="text-gray-500 mb-8">Be the first to report an issue in your area.</p>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">{settings.empty_state_title}</h3>
+          <p className="text-gray-500 mb-8 whitespace-pre-wrap">{settings.empty_state_body}</p>
           <button 
             onClick={() => window.location.href = '/create'}
             className="px-8 py-3 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all"
           >
-            Create First Report
+            {settings.hero_cta_text}
           </button>
         </div>
       ) : (

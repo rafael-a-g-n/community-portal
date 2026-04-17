@@ -5,8 +5,11 @@ import CreateReportPage from './pages/CreateReportPage';
 import ReportDetailPage from './pages/ReportDetailPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
+import { useSiteSettings } from './context/SiteSettingsContext';
 
 export default function App() {
+  const { settings } = useSiteSettings();
+
   return (
     <Router>
       <Routes>
@@ -25,13 +28,9 @@ export default function App() {
                 <Route path="/reports/:id" element={<ReportDetailPage />} />
                 <Route path="/about" element={
                   <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-                    <h1 className="text-4xl font-bold mb-6">About Community Portal</h1>
-                    <p className="text-lg text-gray-600 leading-relaxed">
-                      Community Portal is a community-driven platform designed to bridge the gap
-                      between citizens and local authorities. By providing a transparent and
-                      easy-to-use interface for reporting infrastructure, safety, and environmental
-                      issues, we empower residents to take an active role in improving their
-                      neighborhoods.
+                    <h1 className="text-4xl font-bold mb-6">{settings.about_title}</h1>
+                    <p className="text-lg text-gray-600 leading-relaxed whitespace-pre-wrap">
+                      {settings.about_body}
                     </p>
                   </div>
                 } />
@@ -43,9 +42,11 @@ export default function App() {
                 <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                   <div className="flex items-center space-x-2">
                     <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
-                      <span className="text-white text-[10px] font-bold">CP</span>
+                      <span className="text-white text-[10px] font-bold">
+                        {settings.site_name.substring(0, 2).toUpperCase()}
+                      </span>
                     </div>
-                    <span className="text-lg font-bold tracking-tight text-gray-900">Community Portal</span>
+                    <span className="text-lg font-bold tracking-tight text-gray-900">{settings.site_name}</span>
                   </div>
 
                   <div className="flex space-x-6 text-sm font-medium text-gray-500">
@@ -54,8 +55,14 @@ export default function App() {
                     <a href="#" className="hover:text-indigo-600 transition-colors">Contact</a>
                   </div>
 
-                  <p className="text-sm text-gray-400">
-                    © {new Date().getFullYear()} Community Portal. All rights reserved.
+                  <p className="text-sm text-gray-400 flex flex-col sm:flex-row gap-1 sm:gap-2 text-center sm:text-left">
+                    <span>© {new Date().getFullYear()} {settings.site_name}. All rights reserved.</span>
+                    {settings.footer_copyright_text && (
+                      <span className="hidden sm:inline">| {settings.footer_copyright_text}</span>
+                    )}
+                    {settings.footer_copyright_text && (
+                      <span className="sm:hidden">{settings.footer_copyright_text}</span>
+                    )}
                   </p>
                 </div>
               </div>

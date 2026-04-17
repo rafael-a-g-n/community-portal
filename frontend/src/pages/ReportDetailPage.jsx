@@ -13,8 +13,10 @@ import {
   MessageSquareCheck,
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
 export default function ReportDetailPage() {
+  const { settings } = useSiteSettings();
   const { id } = useParams();
   const navigate = useNavigate();
   const [report, setReport] = useState(null);
@@ -156,7 +158,7 @@ export default function ReportDetailPage() {
                   <MessageSquareCheck className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-green-800 text-sm">Official Response</h3>
+                  <h3 className="font-bold text-green-800 text-sm">{settings.detail_official_response_label}</h3>
                   <p className="text-xs text-green-600">From the Community Portal team</p>
                 </div>
               </div>
@@ -193,9 +195,9 @@ export default function ReportDetailPage() {
             className="bg-indigo-600 p-8 rounded-3xl shadow-xl text-white relative overflow-hidden group"
           >
             <div className="relative z-10">
-              <h4 className="text-xl font-bold mb-2">Need Help?</h4>
+              <h4 className="text-xl font-bold mb-2">{settings.detail_support_title}</h4>
               <p className="text-indigo-100 text-sm mb-6 leading-relaxed">
-                If you have more information about this issue, please contact our community support team.
+                {settings.detail_support_body}
               </p>
               <button className="w-full py-3 bg-white text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition-colors">
                 Contact Support
