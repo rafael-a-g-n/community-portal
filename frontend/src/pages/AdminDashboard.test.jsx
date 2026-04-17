@@ -225,4 +225,24 @@ describe('AdminDashboard', () => {
       expect(screen.getByText(/Settings successfully updated/i)).toBeInTheDocument();
     });
   });
+
+  it('can search for reports in the dashboard', async () => {
+    vi.spyOn(reportService, 'getReports').mockResolvedValue({ results: mockReports, count: 2 });
+    
+    renderDashboard();
+
+    await waitFor(() => screen.getByTestId('reports-table'));
+
+    const searchInput = screen.getByPlaceholderText('Search admin reports...');
+    fireEvent.change(searchInput, { target: { value: 'pavement' } });
+
+    // Wait for the 300ms debounce + buffer
+    await new Promise(r => setTimeout(r, 500));
+
+    await waitFor(() => {
+      expect(reportService.getReports).toHaveBeenCalledWith(expect.objectContaining({
+        search: 'pavement'
+      }));
+    });
+  });
 });

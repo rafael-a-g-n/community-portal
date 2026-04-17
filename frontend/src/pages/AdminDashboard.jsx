@@ -17,6 +17,7 @@ import {
   LayoutDashboard,
   Tag,
   Settings,
+  Search,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
@@ -550,6 +551,8 @@ export default function AdminDashboard() {
   const [totalCount, setTotalCount] = useState(0);
   const [categories, setCategories] = useState([]);
   const [activeTab, setActiveTab] = useState('reports'); // 'reports' | 'categories' | 'settings'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const PAGE_SIZE = 10;
 
   // Redirect if not logged in
@@ -559,12 +562,23 @@ export default function AdminDashboard() {
     }
   }, [navigate]);
 
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setPage(1); // Reset to first page on search
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const fetchReports = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const params = { page };
       if (statusFilter) params.status = statusFilter;
+      if (debouncedSearch) params.search = debouncedSearch;
+      
       const [reportsData, catsData] = await Promise.all([
         reportService.getReports(params),
         reportService.getCategories()
@@ -577,7 +591,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [statusFilter, page]);
+  }, [statusFilter, page, debouncedSearch]);
 
   useEffect(() => {
     fetchReports();
@@ -706,6 +720,17 @@ export default function AdminDashboard() {
                   <option value="resolved">Resolved</option>
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
+
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search admin reports..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
               </div>
             </div>
 
