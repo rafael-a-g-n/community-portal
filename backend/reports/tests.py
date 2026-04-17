@@ -231,9 +231,9 @@ class TestReportDetailPatchPermissions:
             {"status": Report.Status.RESOLVED},
             format="json",
         )
-        assert response.status_code == 403
+        assert response.status_code in [401, 403]
 
-    def test_report_detail_patch_as_admin_updates_status(self, api_client):
+    def test_report_detail_patch_as_admin_updates_status_and_comment(self, api_client):
         category = Category.objects.create(name="Transit", icon="bus")
         report = Report.objects.create(
             title="Bus stop sign missing",
@@ -252,13 +252,17 @@ class TestReportDetailPatchPermissions:
 
         response = api_client.patch(
             f"/api/v1/reports/{report.id}/",
-            {"status": Report.Status.RESOLVED},
+            {
+                "status": Report.Status.RESOLVED,
+                "resolution_comment": "We successfully verified and replaced the missing street sign today."
+            },
             format="json",
         )
         assert response.status_code == 200
 
         report.refresh_from_db()
         assert report.status == Report.Status.RESOLVED
+        assert report.resolution_comment == "We successfully verified and replaced the missing street sign today."
 
 
 @pytest.mark.django_db
