@@ -38,6 +38,7 @@ class Report(models.Model):
         default=Status.OPEN,
     )
     photo = models.ImageField(upload_to="reports/photos/", blank=True, null=True)
+    resolution_comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
