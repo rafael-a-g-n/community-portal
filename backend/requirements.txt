@@ -6,7 +6,7 @@ drf-spectacular
 django-cors-headers
 
 # PostgreSQL driver (choose one in deployment)
-psycopg
+psycopg[binary]
 
 Pillow
 
