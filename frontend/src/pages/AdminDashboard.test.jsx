@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import AdminDashboard from './AdminDashboard';
 import { reportService } from '../services/reportService';
 import * as authService from '../services/authService';
-
+import * as settingsService from '../services/settingsService';
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
@@ -195,6 +195,34 @@ describe('AdminDashboard', () => {
     await waitFor(() => {
       expect(reportService.deleteCategory).toHaveBeenCalledWith(1);
       expect(screen.queryByText('Roads')).not.toBeInTheDocument();
+    });
+  });
+
+  it('can switch to Site Settings tab and save settings', async () => {
+    vi.spyOn(reportService, 'getReports').mockResolvedValue({ results: [], count: 0 });
+    vi.spyOn(reportService, 'getCategories').mockResolvedValue([]);
+    vi.spyOn(settingsService, 'updateSettings').mockResolvedValue({});
+
+    // Spy on the SiteSettingsContext context? The default context handles default settings
+    // so we should see "Community Portal".
+    renderDashboard();
+
+    fireEvent.click(screen.getByText('Site Settings'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Site Settings CMS')).toBeInTheDocument();
+    });
+
+    const nameInputs = screen.getAllByDisplayValue('Community Portal'); 
+    fireEvent.change(nameInputs[0], { target: { value: 'New Site Name' } });
+
+    fireEvent.click(screen.getByTestId('save-settings-btn'));
+
+    await waitFor(() => {
+      expect(settingsService.updateSettings).toHaveBeenCalledWith(
+        expect.objectContaining({ site_name: 'New Site Name' })
+      );
+      expect(screen.getByText(/Settings successfully updated/i)).toBeInTheDocument();
     });
   });
 });

@@ -16,8 +16,11 @@ import {
   Plus,
   LayoutDashboard,
   Tag,
+  Settings,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useSiteSettings } from '../context/SiteSettingsContext';
+import { updateSettings } from '../services/settingsService';
 
 const STATUS_CONFIG = {
   open: {
@@ -254,6 +257,110 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
   );
 }
 
+function SiteSettingsManager() {
+  const { settings, refreshSettings } = useSiteSettings();
+  const [formData, setFormData] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+
+  // Initialize form data from context settings
+  useEffect(() => {
+    if (settings) {
+      setFormData(settings);
+    }
+  }, [settings]);
+
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setError(null);
+    setSuccess(false);
+    try {
+      await updateSettings(formData);
+      await refreshSettings();
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to apply settings.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const fields = [
+    { name: 'site_name', label: 'Site Name', type: 'text' },
+    { name: 'site_tagline', label: 'Tagline', type: 'text' },
+    { name: 'navbar_brand_text', label: 'Navbar Brand Text', type: 'text' },
+    { name: 'navbar_cta_text', label: 'Navbar CTA Text', type: 'text' },
+    { name: 'hero_title', label: 'Hero Title', type: 'text' },
+    { name: 'hero_subtitle', label: 'Hero Subtitle', type: 'textarea' },
+    { name: 'hero_cta_text', label: 'Hero CTA Text', type: 'text' },
+    { name: 'empty_state_title', label: 'Empty State Title', type: 'text' },
+    { name: 'empty_state_body', label: 'Empty State Body', type: 'text' },
+    { name: 'about_title', label: 'About Title', type: 'text' },
+    { name: 'about_body', label: 'About Body', type: 'textarea' },
+    { name: 'footer_copyright_text', label: 'Footer Copyright', type: 'text' },
+  ];
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-bold text-gray-900">Site Settings CMS</h3>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          data-testid="save-settings-btn"
+          className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+        >
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          Save Changes
+        </button>
+      </div>
+
+      {error && (
+        <div className="flex items-center gap-2 bg-red-50 text-red-700 border border-red-200 rounded-2xl px-5 py-4 text-sm mb-6" role="alert">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="flex items-center gap-2 bg-green-50 text-green-700 border border-green-200 rounded-2xl px-5 py-4 text-sm mb-6" role="alert">
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+          Settings successfully updated. Let's make changes!
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {fields.map(f => (
+          <div key={f.name} className={`${f.type === 'textarea' ? 'col-span-1 md:col-span-2' : ''}`}>
+            <label className="block text-sm font-bold text-gray-700 mb-2">{f.label}</label>
+            {f.type === 'textarea' ? (
+              <textarea
+                value={formData[f.name] || ''}
+                onChange={(e) => handleChange(f.name, e.target.value)}
+                rows={4}
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm resize-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 outline-none"
+              />
+            ) : (
+              <input
+                type="text"
+                value={formData[f.name] || ''}
+                onChange={(e) => handleChange(f.name, e.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 bg-gray-50 outline-none"
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function CategoryManager({ categories, onSaved, onDeleted }) {
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
@@ -442,7 +549,7 @@ export default function AdminDashboard() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [categories, setCategories] = useState([]);
-  const [activeTab, setActiveTab] = useState('reports'); // 'reports' | 'categories'
+  const [activeTab, setActiveTab] = useState('reports'); // 'reports' | 'categories' | 'settings'
   const PAGE_SIZE = 10;
 
   // Redirect if not logged in
@@ -567,6 +674,17 @@ export default function AdminDashboard() {
             <Tag className="w-4 h-4" />
             Categories
           </button>
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'settings'
+                ? 'border-indigo-600 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Settings className="w-4 h-4" />
+            Site Settings
+          </button>
         </div>
       </div>
 
@@ -689,6 +807,13 @@ export default function AdminDashboard() {
               onSaved={handleCategorySaved} 
               onDeleted={handleCategoryDeleted} 
             />
+          </motion.div>
+        )}
+
+        {/* Site Settings Tab Contents */}
+        {activeTab === 'settings' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <SiteSettingsManager />
           </motion.div>
         )}
       </main>
