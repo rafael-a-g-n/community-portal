@@ -1,121 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
+import CreateReportPage from './pages/CreateReportPage';
+import ReportDetailPage from './pages/ReportDetailPage';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    <Router>
+      <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/create" element={<CreateReportPage />} />
+            <Route path="/reports/:id" element={<ReportDetailPage />} />
+            <Route path="/about" element={
+              <div className="max-w-3xl mx-auto px-4 py-20 text-center">
+                <h1 className="text-4xl font-bold mb-6">About Community Portal</h1>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Community Portal is a community-driven platform designed to bridge the gap between citizens and local authorities. 
+                  By providing a transparent and easy-to-use interface for reporting infrastructure, safety, and environmental issues, 
+                  we empower residents to take an active role in improving their neighborhoods.
+                </p>
+              </div>
+            } />
+          </Routes>
+        </main>
+        
+        <footer className="bg-white border-t border-gray-100 py-12 mt-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
+                  <span className="text-white text-[10px] font-bold">CP</span>
+                </div>
+                <span className="text-lg font-bold tracking-tight text-gray-900">Community Portal</span>
+              </div>
+              
+              <div className="flex space-x-6 text-sm font-medium text-gray-500">
+                <a href="#" className="hover:text-indigo-600 transition-colors">Privacy Policy</a>
+                <a href="#" className="hover:text-indigo-600 transition-colors">Terms of Service</a>
+                <a href="#" className="hover:text-indigo-600 transition-colors">Contact</a>
+              </div>
+              
+              <p className="text-sm text-gray-400">
+                © {new Date().getFullYear()} Community Portal. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </Router>
+  );
 }
-
-export default App
