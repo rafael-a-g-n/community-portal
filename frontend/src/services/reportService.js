@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken } from './authService';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 const API_ORIGIN = new URL(API_BASE_URL).origin;
@@ -6,6 +7,15 @@ const API_ORIGIN = new URL(API_BASE_URL).origin;
 // Exporting instance for testing visibility
 export const api = axios.create({
   baseURL: API_BASE_URL,
+});
+
+// Attach the admin auth token to every request if one exists
+api.interceptors.request.use((config) => {
+  const token = getToken();
+  if (token) {
+    config.headers.Authorization = `Token ${token}`;
+  }
+  return config;
 });
 
 export function normalizeMediaUrl(url) {
