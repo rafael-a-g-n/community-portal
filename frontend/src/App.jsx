@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import { useTranslation } from 'react-i18next';
 import HomePage from './pages/HomePage';
 import CreateReportPage from './pages/CreateReportPage';
 import ReportDetailPage from './pages/ReportDetailPage';
