@@ -1,10 +1,65 @@
 {
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "newReport": "New Report",
+    "admin": "Admin",
+    "logout": "Sign out"
+  },
   "common": {
     "loading": "Loading...",
-    "error": "An error occurred",
-    "save": "Save",
+    "error": "Something went wrong",
+    "save": "Save Changes",
+    "saving": "Saving...",
     "cancel": "Cancel",
     "delete": "Delete",
-    "search": "Search"
+    "deleting": "Deleting...",
+    "manage": "Manage",
+    "search": "Search reports...",
+    "refresh": "Refresh",
+    "back": "Back",
+    "optional": "optional"
+  },
+  "status": {
+    "open": "Open",
+    "in_progress": "In Progress",
+    "resolved": "Resolved",
+    "all": "All statuses"
+  },
+  "form": {
+    "title": "Title",
+    "description": "Description",
+    "category": "Category",
+    "status": "Status",
+    "photo": "Photo",
+    "resolutionComment": "Resolution Comment",
+    "resolutionPlaceholder": "Describe the action taken or resolution details...",
+    "publicVisibilityNote": "This comment will be publicly visible on the report page."
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "reportsTab": "Reports",
+    "categoriesTab": "Categories",
+    "settingsTab": "Site Settings",
+    "editReport": "Edit Report",
+    "manageCategories": "Manage Categories",
+    "newCategoryName": "New Category Name",
+    "iconEmoji": "Icon (e.g. 🌳, 🛣️)",
+    "addCategory": "Add Category",
+    "categorySlug": "Slug",
+    "siteSettingsCms": "Site Settings CMS",
+    "settingsUpdated": "Settings successfully updated.",
+    "noReports": "No reports found",
+    "table": {
+      "title": "Title",
+      "category": "Category",
+      "status": "Status",
+      "date": "Date",
+      "action": "Action"
+    }
+  },
+  "home": {
+    "latestReports": "Latest Reports",
+    "viewDetail": "View Details"
   }
 }

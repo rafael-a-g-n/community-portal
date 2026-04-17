@@ -1,10 +1,65 @@
 {
+  "nav": {
+    "home": "Início",
+    "about": "Sobre",
+    "newReport": "Novo Relato",
+    "admin": "Admin",
+    "logout": "Sair"
+  },
   "common": {
     "loading": "A carregar...",
     "error": "Ocorreu um erro",
-    "save": "Guardar",
+    "save": "Guardar Alterações",
+    "saving": "A guardar...",
     "cancel": "Cancelar",
     "delete": "Eliminar",
-    "search": "Procurar"
+    "deleting": "A eliminar...",
+    "manage": "Gerir",
+    "search": "Procurar relatos...",
+    "refresh": "Atualizar",
+    "back": "Voltar",
+    "optional": "opcional"
+  },
+  "status": {
+    "open": "Aberto",
+    "in_progress": "Em Curso",
+    "resolved": "Resolvido",
+    "all": "Todos os estados"
+  },
+  "form": {
+    "title": "Título",
+    "description": "Descrição",
+    "category": "Categoria",
+    "status": "Estado",
+    "photo": "Foto",
+    "resolutionComment": "Comentário de Resolução",
+    "resolutionPlaceholder": "Descreva a ação tomada ou detalhes da resolução...",
+    "publicVisibilityNote": "Este comentário será visível publicamente na página do relato."
+  },
+  "admin": {
+    "dashboard": "Painel de Administração",
+    "reportsTab": "Relatos",
+    "categoriesTab": "Categorias",
+    "settingsTab": "Definições do Site",
+    "editReport": "Editar Relato",
+    "manageCategories": "Gerir Categorias",
+    "newCategoryName": "Nome da Nova Categoria",
+    "iconEmoji": "Ícone (ex: 🌳, 🛣️)",
+    "addCategory": "Adicionar Categoria",
+    "categorySlug": "Slug",
+    "siteSettingsCms": "CMS de Definições",
+    "settingsUpdated": "Definições atualizadas com sucesso.",
+    "noReports": "Nenhum relato encontrado",
+    "table": {
+      "title": "Título",
+      "category": "Categoria",
+      "status": "Estado",
+      "date": "Data",
+      "action": "Ação"
+    }
+  },
+  "home": {
+    "latestReports": "Últimos Relatos",
+    "viewDetail": "Ver Detalhes"
   }
 }
