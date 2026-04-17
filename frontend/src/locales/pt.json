@@ -1,0 +1,10 @@
+{
+  "common": {
+    "loading": "A carregar...",
+    "error": "Ocorreu um erro",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "search": "Procurar"
+  }
+}
