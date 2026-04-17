@@ -66,4 +66,43 @@ export const reportService = {
     const response = await api.patch(`/reports/${id}/`, data);
     return normalizeReport(response.data);
   },
+
+  /**
+   * Permanently delete a report (admin only).
+   * @param {string} id - Report UUID
+   * @returns {Promise<void>}
+   */
+  async deleteReport(id) {
+    await api.delete(`/reports/${id}/`);
+  },
+
+  /**
+   * Create a new category (admin only).
+   * @param {{ name: string, icon?: string }} data
+   * @returns {Promise<object>} Created category
+   */
+  async createCategory(data) {
+    const response = await api.post('/categories/', data);
+    return response.data;
+  },
+
+  /**
+   * Update a category name or icon (admin only).
+   * @param {number} id - Category pk
+   * @param {{ name?: string, icon?: string }} data
+   * @returns {Promise<object>} Updated category
+   */
+  async updateCategory(id, data) {
+    const response = await api.patch(`/categories/${id}/`, data);
+    return response.data;
+  },
+
+  /**
+   * Delete a category (admin only). Throws if linked reports exist.
+   * @param {number} id - Category pk
+   * @returns {Promise<void>}
+   */
+  async deleteCategory(id) {
+    await api.delete(`/categories/${id}/`);
+  },
 };

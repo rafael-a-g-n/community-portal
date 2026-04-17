@@ -72,10 +72,40 @@ describe('reportService', () => {
       formData.append('title', 'New');
       
       await reportService.createReport(formData);
-      
+
       expect(api.post).toHaveBeenCalledWith('/reports/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
+    });
+  }); // end 'API Calls'
+
+  describe('Admin API Calls', () => {
+    it('deleteReport sends DELETE to correct URL', async () => {
+      vi.spyOn(api, 'delete').mockResolvedValueOnce({});
+      await reportService.deleteReport('uuid-abc');
+      expect(api.delete).toHaveBeenCalledWith('/reports/uuid-abc/');
+    });
+
+    it('createCategory sends POST with data', async () => {
+      const mockCat = { id: 1, name: 'Parks', slug: 'parks', icon: '🌳' };
+      vi.spyOn(api, 'post').mockResolvedValueOnce({ data: mockCat });
+      const result = await reportService.createCategory({ name: 'Parks', icon: '🌳' });
+      expect(api.post).toHaveBeenCalledWith('/categories/', { name: 'Parks', icon: '🌳' });
+      expect(result).toEqual(mockCat);
+    });
+
+    it('updateCategory sends PATCH to correct URL with data', async () => {
+      const mockCat = { id: 2, name: 'Roads', slug: 'roads', icon: '🛣️' };
+      vi.spyOn(api, 'patch').mockResolvedValueOnce({ data: mockCat });
+      const result = await reportService.updateCategory(2, { name: 'Roads' });
+      expect(api.patch).toHaveBeenCalledWith('/categories/2/', { name: 'Roads' });
+      expect(result).toEqual(mockCat);
+    });
+
+    it('deleteCategory sends DELETE to correct URL', async () => {
+      vi.spyOn(api, 'delete').mockResolvedValueOnce({});
+      await reportService.deleteCategory(3);
+      expect(api.delete).toHaveBeenCalledWith('/categories/3/');
     });
   });
 });
