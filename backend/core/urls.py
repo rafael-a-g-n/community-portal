@@ -8,9 +8,11 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/v1/auth/login/", obtain_auth_token, name="api_token_auth"),
     path("api/v1/", include("reports.urls")),
 ]
 

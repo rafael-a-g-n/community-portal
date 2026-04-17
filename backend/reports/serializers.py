@@ -34,6 +34,7 @@ class ReportSerializer(serializers.ModelSerializer):
             "category_id",
             "status",
             "status_display",
+            "resolution_comment",
             "photo",
             "created_at",
             "updated_at",
