@@ -127,7 +127,7 @@ export default function ReportDetailPage() {
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{t('admin.table.date')}</p>
                     <p className="text-sm font-semibold text-gray-700">
-                      {new Date(report.created_at).toLocaleDateString(i18n.language, { dateStyle: 'long' })}
+                      {new Date(report.created_at).toLocaleDateString(i18n.language)}
                     </p>
                   </div>
                 </div>
@@ -136,9 +136,9 @@ export default function ReportDetailPage() {
                     <Clock className="w-5 h-5 text-gray-400" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{(i18n.language === 'pt' ? 'Atualizado' : 'Updated')}</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{t('common.updated')}</p>
                     <p className="text-sm font-semibold text-gray-700">
-                      {new Date(report.updated_at).toLocaleDateString(i18n.language, { dateStyle: 'long' })}
+                      {new Date(report.updated_at).toLocaleDateString(i18n.language)}
                     </p>
                   </div>
                 </div>

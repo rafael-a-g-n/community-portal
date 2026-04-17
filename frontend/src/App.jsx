@@ -45,7 +45,12 @@ export default function App() {
                   <div className="flex items-center space-x-2">
                     <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
                       <span className="text-white text-[10px] font-bold">
-                        {localizedSettings?.site_name?.substring(0, 2).toUpperCase()}
+                        {localizedSettings?.site_name
+                          ?.split(' ')
+                          .filter(word => word.length > 0)
+                          .map(word => word[0])
+                          .join('')
+                          .toUpperCase()}
                       </span>
                     </div>
                     <span className="text-lg font-bold tracking-tight text-gray-900">{localizedSettings?.site_name}</span>

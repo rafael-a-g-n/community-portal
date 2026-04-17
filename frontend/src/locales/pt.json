@@ -23,13 +23,17 @@
     "search": "Procurar relatos...",
     "refresh": "Atualizar",
     "back": "Voltar",
+    "updated": "Atualizado",
     "optional": "opcional"
   },
   "status": {
     "open": "Aberto",
     "in_progress": "Em Curso",
     "resolved": "Resolvido",
-    "all": "Todos os estados"
+    "all": "Todos"
+  },
+  "category": {
+    "all": "Todas as Categorias"
   },
   "form": {
     "title": "Título",

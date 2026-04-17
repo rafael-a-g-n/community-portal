@@ -84,7 +84,7 @@ export default function HomePage() {
             onChange={(e) => setSelectedCategory(e.target.value ? Number(e.target.value) : undefined)}
             className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer hover:border-indigo-300 transition-colors"
           >
-            <option value="">{t('status.all')}</option>
+            <option value="">{t('category.all')}</option>
             {categories.map(cat => (
               <option key={cat.id} value={cat.id}>
                 {i18n.language === 'pt' && cat.name_pt ? cat.name_pt : cat.name}

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function CreateReportPage() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchingCategories, setFetchingCategories] = useState(true);

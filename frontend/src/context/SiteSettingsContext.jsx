@@ -72,7 +72,7 @@ export function SiteSettingsProvider({ children }) {
   }, [rawSettings, i18n.language]);
 
   return (
-    <SiteSettingsContext.Provider value={{ settings: localizedSettings, loading, error, refreshSettings: fetchSettings }}>
+    <SiteSettingsContext.Provider value={{ settings: rawSettings, localizedSettings, loading, error, refreshSettings: fetchSettings }}>
       {children}
     </SiteSettingsContext.Provider>
   );

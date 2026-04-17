@@ -180,7 +180,7 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
                 <option value="">{t('admin.manageCategories')}</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.name}
+                    {i18n.language === 'pt' && c.name_pt ? c.name_pt : c.name}
                   </option>
                 ))}
               </select>
@@ -580,7 +580,12 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
                 <div className="flex items-center gap-3">
                   <span className="text-xl">{cat.icon || '📌'}</span>
                   <div>
-                    <p className="font-bold text-gray-900">{cat.name}</p>
+                    <p className="font-bold text-gray-900">
+                      {i18n.language === 'pt' && cat.name_pt ? cat.name_pt : cat.name}
+                      {i18n.language === 'pt' && cat.name_pt && cat.name_pt !== cat.name && (
+                         <span className="ml-2 text-xs font-normal text-gray-400">({cat.name})</span>
+                      )}
+                    </p>
                     <p className="text-xs text-gray-400">{t('admin.categorySlug')}: {cat.slug}</p>
                   </div>
                 </div>
@@ -848,13 +853,15 @@ export default function AdminDashboard() {
                           )}
                         </td>
                         <td className="px-5 py-4 text-gray-500">
-                          {typeof report.category === 'object' ? report.category?.name : report.category}
+                          {typeof report.category === 'object' 
+                            ? (i18n.language === 'pt' && report.category.name_pt ? report.category.name_pt : report.category.name)
+                            : report.category}
                         </td>
                         <td className="px-5 py-4">
                           <StatusBadge status={report.status} />
                         </td>
                         <td className="px-5 py-4 text-gray-400">
-                          {new Date(report.created_at).toLocaleDateString()}
+                          {new Date(report.created_at).toLocaleDateString(i18n.language)}
                         </td>
                         <td className="px-5 py-4 text-right">
                           <button

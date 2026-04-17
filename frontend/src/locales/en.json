@@ -23,13 +23,17 @@
     "search": "Search reports...",
     "refresh": "Refresh",
     "back": "Back",
+    "updated": "Updated",
     "optional": "optional"
   },
   "status": {
     "open": "Open",
     "in_progress": "In Progress",
     "resolved": "Resolved",
-    "all": "All statuses"
+    "all": "All Statuses"
+  },
+  "category": {
+    "all": "All Categories"
   },
   "form": {
     "title": "Title",
