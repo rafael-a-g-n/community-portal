@@ -4,7 +4,12 @@
     "about": "About",
     "newReport": "New Report",
     "admin": "Admin",
-    "logout": "Sign out"
+    "logout": "Logout",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact",
+    "rightsReserved": "All rights reserved.",
+    "contactSupport": "Contact Support"
   },
   "common": {
     "loading": "Loading...",
@@ -46,7 +51,8 @@
     "newCategoryName": "New Category Name",
     "iconEmoji": "Icon (e.g. 🌳, 🛣️)",
     "addCategory": "Add Category",
-    "categorySlug": "Slug",
+    "categorySlug": "Category Slug",
+    "officialResponseSub": "From the Community Portal team",
     "siteSettingsCms": "Site Settings CMS",
     "settingsUpdated": "Settings successfully updated.",
     "noReports": "No reports found",

@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import { getSettings } from '../services/settingsService';
+import { useTranslation } from 'react-i18next';
 
 // Default values to fallback to if the API call fails or before it loads.
 const defaultSettings = {
@@ -28,7 +29,8 @@ const SiteSettingsContext = createContext({
 });
 
 export function SiteSettingsProvider({ children }) {
-  const [settings, setSettings] = useState(defaultSettings);
+  const { i18n } = useTranslation();
+  const [rawSettings, setRawSettings] = useState(defaultSettings);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -36,13 +38,11 @@ export function SiteSettingsProvider({ children }) {
     try {
       setLoading(true);
       const data = await getSettings();
-      setSettings(data);
+      setRawSettings(data);
       setError(null);
     } catch (err) {
       console.error('Failed to fetch site settings:', err);
       setError(err);
-      // We purposefully don't clear settings here, so we maintain the defaults
-      // or whatever was previously loaded.
     } finally {
       setLoading(false);
     }
@@ -52,8 +52,27 @@ export function SiteSettingsProvider({ children }) {
     fetchSettings();
   }, []);
 
+  // Compute localized settings based on the current language
+  const localizedSettings = useMemo(() => {
+    if (i18n.language === 'pt') {
+      const ptSettings = { ...rawSettings };
+      // Map all _pt fields to their base names
+      Object.keys(rawSettings).forEach(key => {
+        if (key.endsWith('_pt')) {
+          const baseKey = key.slice(0, -3);
+          // Only override if the Portuguese field has content
+          if (rawSettings[key]) {
+            ptSettings[baseKey] = rawSettings[key];
+          }
+        }
+      });
+      return ptSettings;
+    }
+    return rawSettings;
+  }, [rawSettings, i18n.language]);
+
   return (
-    <SiteSettingsContext.Provider value={{ settings, loading, error, refreshSettings: fetchSettings }}>
+    <SiteSettingsContext.Provider value={{ settings: localizedSettings, loading, error, refreshSettings: fetchSettings }}>
       {children}
     </SiteSettingsContext.Provider>
   );

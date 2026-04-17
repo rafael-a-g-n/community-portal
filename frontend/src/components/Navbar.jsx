@@ -5,7 +5,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
 export default function Navbar() {
-  const { settings } = useSiteSettings();
+  const { localizedSettings } = useSiteSettings();
   const { t } = useTranslation();
 
   return (
@@ -16,7 +16,7 @@ export default function Navbar() {
             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
               <ClipboardList className="text-white w-5 h-5" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-gray-900">{settings.navbar_brand_text}</span>
+            <span className="text-xl font-bold tracking-tight text-gray-900">{localizedSettings?.navbar_brand_text}</span>
           </Link>
           
           <div className="hidden md:flex items-center space-x-6">
@@ -36,7 +36,7 @@ export default function Navbar() {
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all"
             >
               <PlusCircle className="w-4 h-4 mr-2" />
-              {settings.navbar_cta_text}
+              {localizedSettings?.navbar_cta_text}
             </Link>
           </div>
 

@@ -177,7 +177,7 @@ export default function CreateReportPage() {
                             : 'bg-white border-gray-200 text-gray-600 hover:border-indigo-200 hover:bg-indigo-50/30'
                         }`}
                       >
-                        {cat.name}
+                        {i18n.language === 'pt' && cat.name_pt ? cat.name_pt : cat.name}
                       </button>
                     ))
                   )}

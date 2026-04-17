@@ -4,7 +4,12 @@
     "about": "Sobre",
     "newReport": "Novo Relato",
     "admin": "Admin",
-    "logout": "Sair"
+    "logout": "Sair",
+    "privacyPolicy": "Política de Privacidade",
+    "termsOfService": "Termos de Serviço",
+    "contact": "Contacto",
+    "rightsReserved": "Todos os direitos reservados.",
+    "contactSupport": "Contactar Suporte"
   },
   "common": {
     "loading": "A carregar...",
@@ -46,7 +51,8 @@
     "newCategoryName": "Nome da Nova Categoria",
     "iconEmoji": "Ícone (ex: 🌳, 🛣️)",
     "addCategory": "Adicionar Categoria",
-    "categorySlug": "Slug",
+    "categorySlug": "Slug da Categoria",
+    "officialResponseSub": "Da equipa do Portal Comunitário",
     "siteSettingsCms": "CMS de Definições",
     "settingsUpdated": "Definições atualizadas com sucesso.",
     "noReports": "Nenhum relato encontrado",

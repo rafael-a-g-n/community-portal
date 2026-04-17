@@ -12,22 +12,16 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ["id", "name", "slug", "icon"]
-        read_only_fields = ["id", "name", "slug", "icon"]
+        fields = ["id", "name", "name_pt", "slug", "icon"]
+        read_only_fields = ["id", "name", "name_pt", "slug", "icon"]
 
 
 class CategoryWriteSerializer(serializers.ModelSerializer):
-    """Write serialiser used for admin create/update of categories.
-
-    Enforces strict sanitisation:
-    - name: stripped, 2–120 characters, unique enforced by model.
-    - icon: stripped, max 120 characters (optional emoji/text label).
-    Slug is derived automatically by the model's ``save()`` method.
-    """
+    """Write serialiser used for admin create/update of categories."""
 
     class Meta:
         model = Category
-        fields = ["id", "name", "slug", "icon"]
+        fields = ["id", "name", "name_pt", "slug", "icon"]
         read_only_fields = ["id", "slug"]
 
     def validate_name(self, value: str) -> str:

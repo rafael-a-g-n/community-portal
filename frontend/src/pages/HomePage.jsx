@@ -7,8 +7,8 @@ import { useSiteSettings } from '../context/SiteSettingsContext';
 import { useTranslation } from 'react-i18next';
 
 export default function HomePage() {
-  const { settings } = useSiteSettings();
-  const { t } = useTranslation();
+  const { localizedSettings } = useSiteSettings();
+  const { t, i18n } = useTranslation();
   const [reports, setReports] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +59,7 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-4xl font-extrabold text-gray-900 sm:text-5xl tracking-tight mb-4"
         >
-          {settings.hero_title}
+          {localizedSettings?.hero_title}
         </motion.h1>
         <motion.p 
           initial={{ opacity: 0 }}
@@ -67,7 +67,7 @@ export default function HomePage() {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-600 max-w-2xl mx-auto whitespace-pre-wrap"
         >
-          {settings.hero_subtitle}
+          {localizedSettings?.hero_subtitle}
         </motion.p>
       </div>
 
@@ -86,7 +86,9 @@ export default function HomePage() {
           >
             <option value="">{t('status.all')}</option>
             {categories.map(cat => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
+              <option key={cat.id} value={cat.id}>
+                {i18n.language === 'pt' && cat.name_pt ? cat.name_pt : cat.name}
+              </option>
             ))}
           </select>
 
@@ -135,13 +137,13 @@ export default function HomePage() {
       ) : reports.length === 0 ? (
         <div className="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200" data-testid="empty-state">
           <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-gray-900 mb-2">{settings.empty_state_title}</h3>
-          <p className="text-gray-500 mb-8 whitespace-pre-wrap">{settings.empty_state_body}</p>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">{localizedSettings?.empty_state_title}</h3>
+          <p className="text-gray-500 mb-8 whitespace-pre-wrap">{localizedSettings?.empty_state_body}</p>
           <button 
             onClick={() => window.location.href = '/create'}
             className="px-8 py-3 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all"
           >
-            {settings.hero_cta_text}
+            {localizedSettings?.hero_cta_text}
           </button>
         </div>
       ) : (

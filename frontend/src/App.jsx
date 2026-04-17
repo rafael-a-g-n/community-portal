@@ -8,7 +8,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import { useSiteSettings } from './context/SiteSettingsContext';
 
 export default function App() {
-  const { settings } = useSiteSettings();
+  const { localizedSettings } = useSiteSettings();
+  const { t } = useTranslation();
 
   return (
     <Router>
@@ -28,9 +29,9 @@ export default function App() {
                 <Route path="/reports/:id" element={<ReportDetailPage />} />
                 <Route path="/about" element={
                   <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-                    <h1 className="text-4xl font-bold mb-6">{settings.about_title}</h1>
+                    <h1 className="text-4xl font-bold mb-6">{localizedSettings?.about_title}</h1>
                     <p className="text-lg text-gray-600 leading-relaxed whitespace-pre-wrap">
-                      {settings.about_body}
+                      {localizedSettings?.about_body}
                     </p>
                   </div>
                 } />
@@ -43,25 +44,25 @@ export default function App() {
                   <div className="flex items-center space-x-2">
                     <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
                       <span className="text-white text-[10px] font-bold">
-                        {settings.site_name.substring(0, 2).toUpperCase()}
+                        {localizedSettings?.site_name?.substring(0, 2).toUpperCase()}
                       </span>
                     </div>
-                    <span className="text-lg font-bold tracking-tight text-gray-900">{settings.site_name}</span>
+                    <span className="text-lg font-bold tracking-tight text-gray-900">{localizedSettings?.site_name}</span>
                   </div>
 
                   <div className="flex space-x-6 text-sm font-medium text-gray-500">
-                    <a href="#" className="hover:text-indigo-600 transition-colors">Privacy Policy</a>
-                    <a href="#" className="hover:text-indigo-600 transition-colors">Terms of Service</a>
-                    <a href="#" className="hover:text-indigo-600 transition-colors">Contact</a>
+                    <a href="#" className="hover:text-indigo-600 transition-colors">{t('nav.privacyPolicy')}</a>
+                    <a href="#" className="hover:text-indigo-600 transition-colors">{t('nav.termsOfService')}</a>
+                    <a href="#" className="hover:text-indigo-600 transition-colors">{t('nav.contact')}</a>
                   </div>
 
                   <p className="text-sm text-gray-400 flex flex-col sm:flex-row gap-1 sm:gap-2 text-center sm:text-left">
-                    <span>© {new Date().getFullYear()} {settings.site_name}. All rights reserved.</span>
-                    {settings.footer_copyright_text && (
-                      <span className="hidden sm:inline">| {settings.footer_copyright_text}</span>
+                    <span>© {new Date().getFullYear()} {localizedSettings?.site_name}. {t('nav.rightsReserved')}</span>
+                    {localizedSettings?.footer_copyright_text && (
+                      <span className="hidden sm:inline">| {localizedSettings?.footer_copyright_text}</span>
                     )}
-                    {settings.footer_copyright_text && (
-                      <span className="sm:hidden">{settings.footer_copyright_text}</span>
+                    {localizedSettings?.footer_copyright_text && (
+                      <span className="sm:hidden">{localizedSettings?.footer_copyright_text}</span>
                     )}
                   </p>
                 </div>

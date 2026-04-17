@@ -2,18 +2,17 @@ import { cn } from '../lib/utils';
 import { Calendar, Tag, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 
 export function StatusBadge({ status }) {
+  const { t } = useTranslation();
   const styles = {
     open: 'bg-amber-50 text-amber-700 border-amber-100',
     in_progress: 'bg-blue-50 text-blue-700 border-blue-100',
     resolved: 'bg-emerald-50 text-emerald-700 border-emerald-100',
   };
 
-  // Capitalize word borders and remove underscores
-  const label = status
-    ? status.replace('_', ' ').replace(/\b\w/g, char => char.toUpperCase())
-    : 'Unknown';
+  const label = status ? t(`status.${status}`) : t('status.unknown');
 
   return (
     <span className={cn(
@@ -26,8 +25,13 @@ export function StatusBadge({ status }) {
 }
 
 export default function ReportCard({ report }) {
-  const category = typeof report.category === 'object' ? report.category : { name: 'Unknown' };
+  const { t, i18n } = useTranslation();
+  const category = typeof report.category === 'object' ? report.category : { name: t('status.unknown') };
   const imageUrl = report.photo ?? report.image;
+  
+  const categoryName = i18n.language === 'pt' && category.name_pt 
+    ? category.name_pt 
+    : category.name;
 
   return (
     <motion.div
@@ -58,7 +62,7 @@ export default function ReportCard({ report }) {
         <div className="p-5">
           <div className="flex items-center space-x-2 text-xs font-medium text-indigo-600 mb-2">
             <Tag className="w-3 h-3" />
-            <span>{category?.name || 'Unknown'}</span>
+            <span>{categoryName || t('status.unknown')}</span>
           </div>
           
           <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-indigo-600 transition-colors">
@@ -72,10 +76,10 @@ export default function ReportCard({ report }) {
           <div className="flex items-center justify-between pt-4 border-t border-gray-50 text-xs text-gray-400">
             <div className="flex items-center">
               <Calendar className="w-3 h-3 mr-1" />
-              {new Date(report.created_at).toLocaleDateString()}
+              {new Date(report.created_at).toLocaleDateString(i18n.language)}
             </div>
             <span className="font-medium text-indigo-600 group-hover:translate-x-1 transition-transform">
-              View Details →
+              {t('home.viewDetail')} →
             </span>
           </div>
         </div>

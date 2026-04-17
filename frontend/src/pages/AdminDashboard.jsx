@@ -299,18 +299,50 @@ function SiteSettingsManager() {
   };
 
   const fields = [
-    { name: 'site_name', label: 'Site Name', type: 'text' },
-    { name: 'site_tagline', label: 'Tagline', type: 'text' },
-    { name: 'navbar_brand_text', label: 'Navbar Brand Text', type: 'text' },
-    { name: 'navbar_cta_text', label: 'Navbar CTA Text', type: 'text' },
-    { name: 'hero_title', label: 'Hero Title', type: 'text' },
-    { name: 'hero_subtitle', label: 'Hero Subtitle', type: 'textarea' },
-    { name: 'hero_cta_text', label: 'Hero CTA Text', type: 'text' },
-    { name: 'empty_state_title', label: 'Empty State Title', type: 'text' },
-    { name: 'empty_state_body', label: 'Empty State Body', type: 'text' },
-    { name: 'about_title', label: 'About Title', type: 'text' },
-    { name: 'about_body', label: 'About Body', type: 'textarea' },
-    { name: 'footer_copyright_text', label: 'Footer Copyright', type: 'text' },
+    { name: 'site_name', label: 'Site Name (EN)', type: 'text' },
+    { name: 'site_name_pt', label: 'Nome do Site (PT)', type: 'text' },
+    
+    { name: 'site_tagline', label: 'Tagline (EN)', type: 'text' },
+    { name: 'site_tagline_pt', label: 'Slogan (PT)', type: 'text' },
+    
+    { name: 'navbar_brand_text', label: 'Navbar Brand Text (EN)', type: 'text' },
+    { name: 'navbar_brand_text_pt', label: 'Texto Marca Navbar (PT)', type: 'text' },
+    
+    { name: 'navbar_cta_text', label: 'Navbar CTA Text (EN)', type: 'text' },
+    { name: 'navbar_cta_text_pt', label: 'Texto CTA Navbar (PT)', type: 'text' },
+    
+    { name: 'hero_title', label: 'Hero Title (EN)', type: 'text' },
+    { name: 'hero_title_pt', label: 'Título Hero (PT)', type: 'text' },
+    
+    { name: 'hero_subtitle', label: 'Hero Subtitle (EN)', type: 'textarea' },
+    { name: 'hero_subtitle_pt', label: 'Subtítulo Hero (PT)', type: 'textarea' },
+    
+    { name: 'hero_cta_text', label: 'Hero CTA Text (EN)', type: 'text' },
+    { name: 'hero_cta_text_pt', label: 'Texto CTA Hero (PT)', type: 'text' },
+    
+    { name: 'empty_state_title', label: 'Empty State Title (EN)', type: 'text' },
+    { name: 'empty_state_title_pt', label: 'Título Estado Vazio (PT)', type: 'text' },
+    
+    { name: 'empty_state_body', label: 'Empty State Body (EN)', type: 'text' },
+    { name: 'empty_state_body_pt', label: 'Corpo Estado Vazio (PT)', type: 'text' },
+    
+    { name: 'about_title', label: 'About Title (EN)', type: 'text' },
+    { name: 'about_title_pt', label: 'Título Sobre (PT)', type: 'text' },
+    
+    { name: 'about_body', label: 'About Body (EN)', type: 'textarea' },
+    { name: 'about_body_pt', label: 'Corpo Sobre (PT)', type: 'textarea' },
+    
+    { name: 'footer_copyright_text', label: 'Footer Copyright (EN)', type: 'text' },
+    { name: 'footer_copyright_text_pt', label: 'Rodapé Copyright (PT)', type: 'text' },
+
+    { name: 'detail_official_response_label', label: 'Official Response Label (EN)', type: 'text' },
+    { name: 'detail_official_response_label_pt', label: 'Rótulo Resposta Oficial (PT)', type: 'text' },
+
+    { name: 'detail_support_title', label: 'Support Title (EN)', type: 'text' },
+    { name: 'detail_support_title_pt', label: 'Título Suporte (PT)', type: 'text' },
+
+    { name: 'detail_support_body', label: 'Support Body (EN)', type: 'text' },
+    { name: 'detail_support_body_pt', label: 'Corpo Suporte (PT)', type: 'text' },
   ];
 
   return (
@@ -371,6 +403,7 @@ function SiteSettingsManager() {
 function CategoryManager({ categories, onSaved, onDeleted }) {
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
+  const [editNamePt, setEditNamePt] = useState('');
   const [editIcon, setEditIcon] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -378,12 +411,14 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
 
 
   const [newName, setNewName] = useState('');
+  const [newNamePt, setNewNamePt] = useState('');
   const [newIcon, setNewIcon] = useState('');
   const [creating, setCreating] = useState(false);
 
   const startEdit = (cat) => {
     setEditingId(cat.id);
     setEditName(cat.name);
+    setEditNamePt(cat.name_pt || '');
     setEditIcon(cat.icon || '');
     setError(null);
   };
@@ -391,6 +426,7 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
   const cancelEdit = () => {
     setEditingId(null);
     setEditName('');
+    setEditNamePt('');
     setEditIcon('');
     setError(null);
   };
@@ -400,7 +436,11 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
     setSaving(true);
     setError(null);
     try {
-      const updated = await reportService.updateCategory(id, { name: editName, icon: editIcon });
+      const updated = await reportService.updateCategory(id, { 
+        name: editName, 
+        name_pt: editNamePt,
+        icon: editIcon 
+      });
       onSaved(updated);
       setEditingId(null);
     } catch (err) {
@@ -415,9 +455,14 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
     setCreating(true);
     setError(null);
     try {
-      const created = await reportService.createCategory({ name: newName, icon: newIcon });
+      const created = await reportService.createCategory({ 
+        name: newName, 
+        name_pt: newNamePt,
+        icon: newIcon 
+      });
       onSaved(created); // We can just append to list
       setNewName('');
+      setNewNamePt('');
       setNewIcon('');
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to create category.');
@@ -452,13 +497,22 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
 
       {/* Create New Category */}
       <div className="flex flex-wrap items-center gap-3 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-200">
-        <input
-          type="text"
-          placeholder={t('admin.newCategoryName')}
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+        <div className="flex-1 min-w-[200px] flex flex-col gap-2">
+          <input
+            type="text"
+            placeholder={t('admin.newCategoryName')}
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <input
+            type="text"
+            placeholder="Nome (Portuguese)"
+            value={newNamePt}
+            onChange={(e) => setNewNamePt(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
         <input
           type="text"
           placeholder={t('admin.iconEmoji')}
@@ -469,7 +523,7 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
         <button
           onClick={createCategory}
           disabled={creating || !newName.trim()}
-          className="flex items-center justify-center px-4 py-2 text-sm font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+          className="flex items-center justify-center self-end md:self-center px-4 py-2 text-sm font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors h-fit"
         >
           {creating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
           {t('admin.addCategory')}
@@ -482,20 +536,29 @@ function CategoryManager({ categories, onSaved, onDeleted }) {
           <div key={cat.id} className="flex flex-wrap items-center justify-between p-4 bg-white border border-gray-200 rounded-xl hover:border-indigo-200 transition-colors">
             {editingId === cat.id ? (
               <div className="flex-1 flex flex-wrap items-center gap-3">
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-                />
+                <div className="flex-1 flex flex-col gap-2">
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <input
+                    type="text"
+                    value={editNamePt}
+                    onChange={(e) => setEditNamePt(e.target.value)}
+                    placeholder="Nome (Portuguese)"
+                    className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
                 <input
                   type="text"
                   value={editIcon}
                   onChange={(e) => setEditIcon(e.target.value)}
                   placeholder={t('admin.iconEmoji')}
-                  className="w-24 px-3 py-1.5 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-24 px-3 py-1.5 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 self-start"
                 />
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 self-start">
                   <button
                     onClick={() => saveEdit(cat.id)}
                     disabled={saving}

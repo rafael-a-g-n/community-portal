@@ -151,6 +151,8 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
 ]
 CORS_ALLOWED_ORIGINS = _get_list_env("CORS_ALLOWED_ORIGINS", CORS_ALLOWED_ORIGINS)
 CSRF_TRUSTED_ORIGINS = _get_list_env("CSRF_TRUSTED_ORIGINS", CORS_ALLOWED_ORIGINS)

@@ -17,7 +17,7 @@ import { useSiteSettings } from '../context/SiteSettingsContext';
 import { useTranslation } from 'react-i18next';
 
 export default function ReportDetailPage() {
-  const { settings } = useSiteSettings();
+  const { localizedSettings } = useSiteSettings();
   const { id } = useParams();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -107,7 +107,7 @@ export default function ReportDetailPage() {
                 <StatusBadge status={report.status} />
                 <div className="flex items-center px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold border border-indigo-100">
                   <Tag className="w-3 h-3 mr-1.5" />
-                  {category.name}
+                  {i18n.language === 'pt' && category.name_pt ? category.name_pt : category.name}
                 </div>
               </div>
 
@@ -160,8 +160,8 @@ export default function ReportDetailPage() {
                   <MessageSquareCheck className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-green-800 text-sm">{settings.detail_official_response_label}</h3>
-                  <p className="text-xs text-green-600">From the Community Portal team</p>
+                  <h3 className="font-bold text-green-800 text-sm">{localizedSettings?.detail_official_response_label}</h3>
+                  <p className="text-xs text-green-600">{t('admin.officialResponseSub')}</p>
                 </div>
               </div>
               <p className="text-green-900 leading-relaxed whitespace-pre-wrap text-sm">
@@ -194,12 +194,12 @@ export default function ReportDetailPage() {
             className="bg-indigo-600 p-8 rounded-3xl shadow-xl text-white relative overflow-hidden group"
           >
             <div className="relative z-10">
-              <h4 className="text-xl font-bold mb-2">{settings.detail_support_title}</h4>
+              <h4 className="text-xl font-bold mb-2">{localizedSettings?.detail_support_title}</h4>
               <p className="text-indigo-100 text-sm mb-6 leading-relaxed">
-                {settings.detail_support_body}
+                {localizedSettings?.detail_support_body}
               </p>
               <button className="w-full py-3 bg-white text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition-colors">
-                {(i18n.language === 'pt' ? 'Contactar Suporte' : 'Contact Support')}
+                {t('nav.contactSupport')}
               </button>
             </div>
             <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-indigo-500 rounded-full opacity-20 group-hover:scale-110 transition-transform duration-500" />
