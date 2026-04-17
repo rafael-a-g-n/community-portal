@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
-import ReportCard, { StatusBadge } from './ReportCard';
+import ReportCard from './ReportCard';
+import StatusBadge from './StatusBadge';
 
 const renderWithRouter = (component) => render(<BrowserRouter>{component}</BrowserRouter>);
 

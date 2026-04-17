@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { reportService } from '../services/reportService';
-import { StatusBadge } from '../components/ReportCard';
+import StatusBadge from '../components/StatusBadge';
 import {
   ArrowLeft,
   Calendar,

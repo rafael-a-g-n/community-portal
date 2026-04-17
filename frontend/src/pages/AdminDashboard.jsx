@@ -24,30 +24,7 @@ import { useSiteSettings } from '../context/SiteSettingsContext';
 import { updateSettings } from '../services/settingsService';
 import { useTranslation } from 'react-i18next';
 
-const STATUS_CONFIG = {
-  open: {
-    label: 'Open',
-    className: 'bg-blue-100 text-blue-700 border-blue-200',
-  },
-  in_progress: {
-    label: 'In Progress',
-    className: 'bg-amber-100 text-amber-700 border-amber-200',
-  },
-  resolved: {
-    label: 'Resolved',
-    className: 'bg-green-100 text-green-700 border-green-200',
-  },
-};
-
-function StatusBadge({ status }) {
-  const { t } = useTranslation();
-  const cfg = STATUS_CONFIG[status] ?? { label: status, className: 'bg-gray-100 text-gray-600' };
-  return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${cfg.className}`}>
-      {t(`status.${status}`)}
-    </span>
-  );
-}
+import StatusBadge from '../components/StatusBadge';
 
 function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
   const [title, setTitle] = useState(report.title);
@@ -193,7 +170,6 @@ function EditDrawer({ report, categories, onClose, onSaved, onDeleted }) {
             <label className="block text-sm font-bold text-gray-700 mb-3">{t('form.status')}</label>
             <div className="space-y-2">
               {['open', 'in_progress', 'resolved'].map((s) => {
-                const cfg = STATUS_CONFIG[s];
                 return (
                   <button
                     key={s}

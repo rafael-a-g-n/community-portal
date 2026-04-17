@@ -4,26 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
-export function StatusBadge({ status }) {
-  const { t } = useTranslation();
-  const styles = {
-    open: 'bg-amber-50 text-amber-700 border-amber-100',
-    in_progress: 'bg-blue-50 text-blue-700 border-blue-100',
-    resolved: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  };
-
-  const label = status ? t(`status.${status}`) : t('status.unknown');
-
-  return (
-    <span className={cn(
-      'px-2.5 py-0.5 rounded-full text-xs font-semibold border',
-      styles[status] || 'bg-gray-50 text-gray-700 border-gray-100'
-    )}>
-      {label}
-    </span>
-  );
-}
-
+import StatusBadge from './StatusBadge';
 export default function ReportCard({ report }) {
   const { t, i18n } = useTranslation();
   const category = typeof report.category === 'object' ? report.category : { name: t('status.unknown') };
