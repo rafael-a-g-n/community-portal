@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const AUTH_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const AUTH_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 const TOKEN_KEY = 'community_portal_admin_token';
 
 /**

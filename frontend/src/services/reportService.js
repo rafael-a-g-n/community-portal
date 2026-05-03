@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { getToken } from './authService';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
-const API_ORIGIN = new URL(API_BASE_URL).origin;
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+const API_ORIGIN = API_BASE_URL.startsWith('http')
+  ? new URL(API_BASE_URL).origin
+  : window.location.origin;
 
 // Exporting instance for testing visibility
 export const api = axios.create({
