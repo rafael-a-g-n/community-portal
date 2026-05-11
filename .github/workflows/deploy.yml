@@ -83,16 +83,12 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment:
       name: backend
-      url: https://community-portal-backend.onrender.com
+      url: ${{ vars.RAILWAY_BACKEND_URL }}
 
     steps:
-      - name: Trigger Render backend deploy
+      - name: Trigger Railway backend deploy
         run: |
-          curl --fail-with-body -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK_URL }}"
-
-      - name: Wait for backend deploy to complete
-        run: |
-          echo "Deploy triggered. Monitor at https://dashboard.render.com"
+          curl --fail-with-body -X POST "${{ secrets.RAILWAY_BACKEND_DEPLOY_HOOK_URL }}"
 
   # ── Deploy frontend ────────────────────────────────────────────────────────
   deploy-frontend:
@@ -102,13 +98,9 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment:
       name: frontend
-      url: https://community-portal-frontend.onrender.com
+      url: ${{ vars.RAILWAY_FRONTEND_URL }}
 
     steps:
-      - name: Trigger Render frontend deploy
+      - name: Trigger Railway frontend deploy
         run: |
-          curl --fail-with-body -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK_URL }}"
-
-      - name: Wait for frontend deploy to complete
-        run: |
-          echo "Deploy triggered. Monitor at https://dashboard.render.com"
+          curl --fail-with-body -X POST "${{ secrets.RAILWAY_FRONTEND_DEPLOY_HOOK_URL }}"
