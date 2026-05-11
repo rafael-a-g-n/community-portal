@@ -2,7 +2,8 @@
 from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
-from django.urls import include, path
+from django.urls import include, path, re_path
+from django.views.static import serve as media_serve
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -17,8 +18,10 @@ urlpatterns = [
     path("api/v1/", include("siteconfig.urls")),
 ]
 
-# Always serve media files (Railway has no external CDN)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT, insecure=True)
+# Always serve media files directly (bypasses DEBUG check in static())
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', media_serve, {'document_root': settings.MEDIA_ROOT}),
+]
 
 if settings.DEBUG:
     urlpatterns += [
