@@ -75,32 +75,6 @@ jobs:
         working-directory: frontend
         run: npm test
 
-  # ── Deploy backend ─────────────────────────────────────────────────────────
-  deploy-backend:
-    name: Deploy Backend
-    needs: [test-backend, test-frontend]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    environment:
-      name: backend
-      url: ${{ vars.RAILWAY_BACKEND_URL }}
-
-    steps:
-      - name: Trigger Railway backend deploy
-        run: |
-          curl --fail-with-body -X POST "${{ secrets.RAILWAY_BACKEND_DEPLOY_HOOK_URL }}"
-
-  # ── Deploy frontend ────────────────────────────────────────────────────────
-  deploy-frontend:
-    name: Deploy Frontend
-    needs: [test-backend, test-frontend]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    environment:
-      name: frontend
-      url: ${{ vars.RAILWAY_FRONTEND_URL }}
-
-    steps:
-      - name: Trigger Railway frontend deploy
-        run: |
-          curl --fail-with-body -X POST "${{ secrets.RAILWAY_FRONTEND_DEPLOY_HOOK_URL }}"
+  # Railway deploys automatically on push to main.
+  # Enable "Wait for CI" in Railway service settings so it waits for these
+  # tests to pass before deploying.
