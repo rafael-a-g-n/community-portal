@@ -1,57 +1,8 @@
-services:
-  # ── Backend ───────────────────────────────────────────────────────────────
-  - type: web
-    name: community-portal-backend
-    runtime: python
-    plan: free
-    rootDir: backend
-    buildCommand: >
-      pip install -r requirements.txt &&
-      python manage.py collectstatic --no-input &&
-      python manage.py migrate
-    startCommand: gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
-    autoDeploy: false   # Deployments are triggered by GitHub Actions after tests pass
-    envVars:
-      - key: SECRET_KEY
-        generateValue: true
-      - key: DEBUG
-        value: "false"
-      - key: ALLOWED_HOSTS
-        value: community-portal-backend.onrender.com
-      - key: PYTHON_VERSION
-        value: "3.12.0"
-      # ── TiDB (MySQL-compatible) ─────────────────────────────────────────
-      - key: DB_ENGINE
-        value: mysql
-      - key: DB_HOST
-        sync: false   # Set this in the Render dashboard to your TiDB Cloud host
-      - key: DB_PORT
-        value: "4000"
-      - key: DB_NAME
-        sync: false   # Your TiDB database name
-      - key: DB_USER
-        sync: false   # Your TiDB username
-      - key: DB_PASSWORD
-        sync: false   # Your TiDB password
-      - key: DB_SSL_MODE
-        value: REQUIRED
-      # ── CORS ────────────────────────────────────────────────────────────
-      - key: CORS_ALLOWED_ORIGINS
-        sync: false   # Set to your frontend URL after first deploy, e.g. https://community-portal-frontend.onrender.com
-      - key: CSRF_TRUSTED_ORIGINS
-        sync: false   # Same as CORS_ALLOWED_ORIGINS
-      # ── Security ────────────────────────────────────────────────────────
-      - key: SECURE_SSL_REDIRECT
-        value: "true"
-
-  # ── Frontend ──────────────────────────────────────────────────────────────
-  - type: web
-    name: community-portal-frontend
-    runtime: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    autoDeploy: false   # Deployments are triggered by GitHub Actions after tests pass
-    envVars:
-      - key: VITE_API_URL
-        sync: false   # Set to https://community-portal-backend.onrender.com/api/v1
+# This file is kept for reference only.
+# The project is deployed on Railway:
+#   Backend:  https://community-portal-production.up.railway.app
+#   Frontend: https://industrious-fascination-production-f419.up.railway.app
+#
+# Railway config files are at:
+#   backend/railway.toml
+#   frontend/railway.toml
