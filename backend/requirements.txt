@@ -5,8 +5,15 @@ django-filter
 drf-spectacular
 django-cors-headers
 
-# PostgreSQL driver (choose one in deployment)
+# PostgreSQL driver (local dev with Docker)
 psycopg[binary]
+
+# MySQL driver (TiDB Cloud / production)
+mysqlclient
+
+# Production server & static files
+gunicorn
+whitenoise
 
 Pillow
 
