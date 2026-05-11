@@ -1,90 +1,108 @@
 # Backend (Django API)
 
-This service provides the REST API for Community Portal.
+REST API for Community Portal, deployed on Railway.
+
+**Production URL:** `https://community-portal-production.up.railway.app/api/v1/`
 
 ## Stack
 
 - Python 3.12
 - Django + Django REST Framework
-- PostgreSQL
+- TiDB Cloud (MySQL-compatible) in production; PostgreSQL locally via Docker Compose
 - django-filter
 - drf-spectacular (OpenAPI docs)
+- gunicorn (production server)
+- WhiteNoise (static file serving)
 - pytest + pytest-django
 
-## Main Apps
+## Apps
 
-- `reports`: categories and citizen reports
-- `siteconfig`: site-wide editable content/settings
-- `core`: project settings and URL wiring
+- `reports` — categories and citizen reports
+- `siteconfig` — site-wide editable content/settings
+- `core` — project settings and URL routing
 
-## API Base Paths
+## API Reference
 
-- API root: `/api/v1/`
-- Auth login: `/api/v1/auth/login/`
-- OpenAPI schema: `/api/schema/`
-- Swagger UI: `/api/docs/swagger/`
-- ReDoc: `/api/docs/redoc/`
-
-## Key Endpoints
+| Path | Description |
+|---|---|
+| `/api/v1/` | API root |
+| `/api/v1/auth/login/` | Admin token login |
+| `/api/schema/` | OpenAPI schema |
+| `/api/docs/swagger/` | Swagger UI |
+| `/api/docs/redoc/` | ReDoc |
 
 ### Categories
 
-- `GET /api/v1/categories/`: list categories (public, unpaginated)
-- `POST /api/v1/categories/`: create category (admin)
-- `GET /api/v1/categories/<id>/`: get category (public)
-- `PATCH /api/v1/categories/<id>/`: update category (admin)
-- `DELETE /api/v1/categories/<id>/`: delete category (admin)
+| Method | Path | Auth |
+|---|---|---|
+| `GET` | `/api/v1/categories/` | Public |
+| `POST` | `/api/v1/categories/` | Admin |
+| `GET` | `/api/v1/categories/<id>/` | Public |
+| `PATCH` | `/api/v1/categories/<id>/` | Admin |
+| `DELETE` | `/api/v1/categories/<id>/` | Admin |
 
 ### Reports
 
-- `GET /api/v1/reports/`: list reports (public, paginated)
-- `POST /api/v1/reports/`: create report (public)
-- `GET /api/v1/reports/<uuid>/`: get report (public)
-- `PATCH /api/v1/reports/<uuid>/`: update report (admin)
-- `DELETE /api/v1/reports/<uuid>/`: delete report (admin)
+| Method | Path | Auth |
+|---|---|---|
+| `GET` | `/api/v1/reports/` | Public |
+| `POST` | `/api/v1/reports/` | Public |
+| `GET` | `/api/v1/reports/<uuid>/` | Public |
+| `PATCH` | `/api/v1/reports/<uuid>/` | Admin |
+| `DELETE` | `/api/v1/reports/<uuid>/` | Admin |
 
 ### Site Settings
 
-- `GET /api/v1/settings/`: retrieve settings singleton (public)
-- `PATCH /api/v1/settings/`: update settings (admin)
+| Method | Path | Auth |
+|---|---|---|
+| `GET` | `/api/v1/settings/` | Public |
+| `PATCH` | `/api/v1/settings/` | Admin |
 
 ## Behavior Notes
 
-- Category list endpoint is intentionally unpaginated.
-- Report creation forces status to `open` even if status is sent by client.
-- Report listing supports strict ordering allowlist (`created_at`, `status`).
+- Category list is intentionally unpaginated.
+- Report creation forces `status=open` regardless of client input.
+- Report listing supports ordering by `created_at` and `status`.
 - Anonymous report creation is throttled.
-- Photo uploads validate size/type and are stored with UUID-based filenames.
+- Photo uploads validate size/type; filenames are UUID-based.
 
 ## Environment Variables
 
 ### Core
 
-- `SECRET_KEY` (default dev value exists)
-- `DEBUG` (`true` by default)
-- `ALLOWED_HOSTS` (comma-separated)
+| Variable | Default | Description |
+|---|---|---|
+| `SECRET_KEY` | dev value | Django secret key |
+| `DEBUG` | `true` | Set `false` in production |
+| `ALLOWED_HOSTS` | — | Comma-separated hostnames |
 
 ### Database
 
-- `DB_NAME` (default: `setubal_resolve`)
-- `DB_USER` (default: `postgres`)
-- `DB_PASSWORD` (default: `postgres`)
-- `DB_HOST` (default: `127.0.0.1`)
-- `DB_PORT` (default: `5432`)
-- `DB_SSLMODE` (default: `prefer`)
+| Variable | Default | Description |
+|---|---|---|
+| `DB_ENGINE` | `django.db.backends.postgresql` | Use `mysql` for TiDB/MySQL |
+| `DB_NAME` | `community_portal` | Database name |
+| `DB_USER` | `postgres` | Database user |
+| `DB_PASSWORD` | `postgres` | Database password |
+| `DB_HOST` | `127.0.0.1` | Database host |
+| `DB_PORT` | `5432` | Database port (`4000` for TiDB) |
+| `DB_SSL_MODE` | — | Set `REQUIRED` for TiDB Cloud |
 
-### CORS/CSRF
+### CORS / CSRF
 
-- `CORS_ALLOWED_ORIGINS` (comma-separated origins)
-- `CSRF_TRUSTED_ORIGINS` (comma-separated origins)
-- `CORS_ALLOW_CREDENTIALS` (default: `false`)
+| Variable | Description |
+|---|---|
+| `CORS_ALLOWED_ORIGINS` | Comma-separated allowed origins |
+| `CSRF_TRUSTED_ORIGINS` | Comma-separated trusted origins |
 
-### Production Security (used when `DEBUG=false`)
+### Production Security (active when `DEBUG=false`)
 
-- `SECURE_SSL_REDIRECT`
-- `SECURE_HSTS_SECONDS`
-- `SECURE_HSTS_INCLUDE_SUBDOMAINS`
-- `SECURE_HSTS_PRELOAD`
+| Variable | Description |
+|---|---|
+| `SECURE_SSL_REDIRECT` | Redirect HTTP → HTTPS |
+| `SECURE_HSTS_SECONDS` | HSTS max-age |
+| `SECURE_HSTS_INCLUDE_SUBDOMAINS` | HSTS subdomains flag |
+| `SECURE_HSTS_PRELOAD` | HSTS preload flag |
 
 ## Local Setup (No Docker)
 
@@ -92,19 +110,21 @@ From repo root:
 
 ```bash
 python -m venv .venv
-.venv/bin/python -m pip install --upgrade pip
-.venv/bin/python -m pip install -r backend/requirements.txt
+.venv/Scripts/activate   # Windows
+# source .venv/bin/activate  # Linux/macOS
+
+pip install -r backend/requirements.txt
 ```
 
-Run migrations and server:
+Run migrations and dev server:
 
 ```bash
 cd backend
-../.venv/bin/python manage.py migrate
-../.venv/bin/python manage.py runserver 0.0.0.0:8000
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000
 ```
 
-## Docker Setup
+## Local Setup (Docker Compose)
 
 From repo root:
 
@@ -116,51 +136,32 @@ docker compose exec backend python manage.py createsuperuser
 
 ## Testing
 
-Run all tests (local venv):
-
 ```bash
 cd backend
-../.venv/bin/python -m pytest -v
-```
-
-Run all tests (Docker):
-
-```bash
-docker compose exec backend python -m pytest -v
-```
-
-## Lint
-
-```bash
-cd backend
-../.venv/bin/python -m flake8 .
+python -m pytest -v
 ```
 
 ## Admin Access
 
-- Django admin panel: `/admin/` (backend site)
-- API admin operations: via token auth from `/api/v1/auth/login/`
+- Frontend admin login: `/admin` (token-based via API)
+- Django admin panel: `/admin/` on the backend service
 
 Create a superuser:
 
 ```bash
-docker compose exec backend python manage.py createsuperuser
+python manage.py createsuperuser
 ```
 
 ## Troubleshooting
 
-### 400 responses in Codespaces for otherwise valid requests
-
-- Recreate backend with current `ALLOWED_HOSTS` values from compose.
-
 ### Database connection refused
 
-- Verify Postgres is running and `DB_HOST`/`DB_PORT` are correct.
+Verify `DB_HOST` and `DB_PORT` are correct and the database is reachable.
 
 ### No categories in UI
 
-- API returns an empty list until an admin creates category records.
+The API returns an empty list until an admin creates category records via the dashboard.
 
-### `SECRET_KEY` / `DB_PASSWORD` errors with `DEBUG=false`
+### `SECRET_KEY` / `DB_PASSWORD` errors
 
-- Set secure production values before starting server.
+Ensure all required environment variables are set before starting the server.

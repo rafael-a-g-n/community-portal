@@ -1,124 +1,78 @@
 # Frontend (React + Vite)
 
-This service is the Community Portal user interface.
+Community Portal user interface, deployed on Railway.
+
+**Production URL:** `https://industrious-fascination-production-f419.up.railway.app`
 
 ## Stack
 
 - React 19
-- Vite 8
+- Vite
 - Axios
-- React Router
-- i18next
+- React Router v7
+- i18next (English / Portuguese)
 - Vitest + Testing Library
-
-## App Responsibilities
-
-- Public pages for browsing and submitting reports
-- Admin login and dashboard
-- Category and site-settings management UI
-- Multi-language rendering (English/Portuguese)
 
 ## Routes
 
-- `/`: home/report list
-- `/create`: create report form
-- `/reports/:id`: report detail
-- `/about`: about page
-- `/admin`: admin login
-- `/admin/dashboard`: admin dashboard
-
-## API Integration
-
-The app uses Axios services in `src/services/`.
-
-Default API behavior:
-
-- `VITE_API_URL` if explicitly provided
-- otherwise relative `/api/v1`
-
-In development, Vite proxies:
-
-- `/api` -> backend target
-- `/media` -> backend target
-
-This makes local Docker and Codespaces development more reliable.
+| Path | Description |
+|---|---|
+| `/` | Home — report list |
+| `/create` | Submit a report |
+| `/reports/:id` | Report detail |
+| `/about` | About page |
+| `/admin` | Admin login |
+| `/admin/dashboard` | Admin dashboard |
 
 ## Environment Variables
 
-- `VITE_API_URL` (optional): full API base URL
-  - Example: `http://localhost:8000/api/v1`
-- `VITE_BACKEND_PROXY_TARGET` (optional): Vite proxy target host
-  - Default: `http://localhost:8000`
-  - Docker Compose uses: `http://backend:8000`
+| Variable | Description |
+|---|---|
+| `VITE_API_URL` | Full API base URL (e.g. `https://community-portal-production.up.railway.app/api/v1`). Required in production. Defaults to relative `/api/v1` for local dev. |
 
-## Local Setup (No Docker)
+The variable is baked into the static build at build time by Vite. Set it in your Railway frontend service before deploying.
+
+## Local Setup
 
 ```bash
 cd frontend
 npm install
-npm run dev -- --host 0.0.0.0 --port 5173
+npm run dev
 ```
 
-App URL:
+App runs at `http://localhost:5173`.
 
-- `http://localhost:5173`
-
-## Docker Setup
-
-From repo root:
-
-```bash
-docker compose up -d --build frontend
-```
-
-With full stack:
-
-```bash
-docker compose up -d --build db backend frontend
-```
+The Vite dev server proxies `/api` and `/media` requests to `http://localhost:8000` so no CORS configuration is needed locally.
 
 ## NPM Scripts
 
-- `npm run dev`: start Vite dev server
-- `npm run build`: production build
-- `npm run preview`: preview built app
-- `npm run clean`: remove `dist`
-- `npm test`: run tests once
-- `npm run test:watch`: run tests in watch mode
+| Script | Description |
+|---|---|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the production build locally |
+| `npm test` | Run tests once |
+| `npm run test:watch` | Run tests in watch mode |
 
 ## Testing
-
-Run tests locally:
 
 ```bash
 cd frontend
 npm test
 ```
 
-Run tests in Docker container:
+## Admin Notes
 
-```bash
-docker compose exec frontend npm test
-```
-
-## Admin Login Notes
-
-- Admin login submits credentials to `/api/v1/auth/login/`.
-- The returned token is stored in local storage and attached to protected requests.
-- You must create a backend superuser first.
+- Admin login posts to `/api/v1/auth/login/` and stores the returned token in `localStorage`.
+- A backend superuser must exist before you can log in.
+- Create one with `python manage.py createsuperuser` on the backend.
 
 ## Troubleshooting
 
 ### Login fails with network error
 
-- Ensure backend is running on `8000`.
-- If in Codespaces, open frontend from forwarded `5173` port.
+Ensure the backend is running and `VITE_API_URL` points to the correct host.
 
-### `Failed to fetch site settings`
+### Categories not shown in the create report form
 
-- Confirm backend service is reachable and not returning host validation 400.
-
-### Categories not shown in create report form
-
-- The form renders categories only if `/api/v1/categories/` returns records.
-- Add categories via admin dashboard.
+`/api/v1/categories/` is returning an empty list. Add categories via the admin dashboard first.

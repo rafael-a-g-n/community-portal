@@ -1,34 +1,85 @@
 # Community Portal
 
-Community Portal is a full-stack web application for reporting community issues (for example potholes, graffiti, or broken lighting), tracking report status, and managing platform content from an admin area.
+Community Portal is a full-stack web application for reporting community issues (potholes, graffiti, broken lighting, etc.), tracking report status, and managing platform content from an admin dashboard.
 
-The project is split into:
+**Live deployment on Railway:**
 
-- `backend/`: Django + Django REST Framework API
-- `frontend/`: React + Vite single-page app
-- `docker-compose.yml`: local orchestration for Postgres, backend, and frontend
+| Service | URL |
+|---|---|
+| Frontend | https://industrious-fascination-production-f419.up.railway.app |
+| Backend API | https://community-portal-production.up.railway.app/api/v1/ |
 
 ## Features
 
 - Public report submission with optional photo upload
-- Public report listing and detail views
-- Report filtering, ordering, and search
-- Admin authentication via token login
-- Admin dashboard to update report status/comments
+- Public report listing and detail views with filtering, ordering, and search
+- Admin token authentication
+- Admin dashboard to update report status and resolution comments
 - Admin category management
-- Site settings CMS (editable content for hero, about page, labels, etc.)
-- English and Portuguese UI support
+- Site settings CMS (hero text, about page, labels, etc.)
+- English and Portuguese UI
 
 ## Tech Stack
 
-- Frontend: React 19, Vite, Axios, i18next, Vitest
-- Backend: Python 3.12, Django, DRF, django-filter, drf-spectacular, pytest
-- Database: PostgreSQL 15
-- Containers: Docker + Docker Compose
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, Vite, Axios, React Router, i18next, Vitest |
+| Backend | Python 3.12, Django, Django REST Framework, django-filter, drf-spectacular, pytest |
+| Database | TiDB Cloud (MySQL-compatible) |
+| Hosting | Railway (backend + frontend as separate services) |
+| CI | GitHub Actions |
 
-## Quick Start (Docker, Recommended)
+## Repository Structure
 
-From repository root:
+```text
+.
+├── backend/          # Django API (see backend/README.md)
+│   ├── core/
+│   ├── reports/
+│   ├── siteconfig/
+│   └── manage.py
+├── frontend/         # React/Vite SPA (see frontend/README.md)
+│   ├── src/
+│   └── public/
+└── docker-compose.yml  # Local development only
+```
+
+## Deployment
+
+The application is deployed on [Railway](https://railway.app). Railway watches the `main` branch and automatically rebuilds and redeploys each service when a push passes CI.
+
+- Backend service uses the `backend/Dockerfile` (gunicorn + WhiteNoise).
+- Frontend service uses the `frontend/Dockerfile` (Vite build → `serve`).
+- Database is TiDB Cloud (external, SSL required).
+
+### Required Railway environment variables
+
+**Backend service:**
+
+| Variable | Description |
+|---|---|
+| `SECRET_KEY` | Django secret key |
+| `DEBUG` | `false` in production |
+| `ALLOWED_HOSTS` | Comma-separated hostnames |
+| `DB_ENGINE` | `mysql` |
+| `DB_HOST` | TiDB Cloud gateway host |
+| `DB_PORT` | `4000` |
+| `DB_NAME` | Database name |
+| `DB_USER` | TiDB user |
+| `DB_PASSWORD` | TiDB password |
+| `DB_SSL_MODE` | `REQUIRED` |
+| `CORS_ALLOWED_ORIGINS` | Frontend origin |
+| `CSRF_TRUSTED_ORIGINS` | Frontend origin |
+
+**Frontend service:**
+
+| Variable | Description |
+|---|---|
+| `VITE_API_URL` | Full backend API base URL |
+
+## Local Development
+
+The `docker-compose.yml` spins up a local stack with PostgreSQL for development.
 
 ```bash
 docker compose up -d --build
@@ -40,113 +91,35 @@ Open:
 
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:8000/api/v1/`
-- Swagger: `http://localhost:8000/api/docs/swagger/`
+- API Docs: `http://localhost:8000/api/docs/swagger/`
 
-## Running In Codespaces
+For setup without Docker, see `backend/README.md` and `frontend/README.md`.
 
-This repository is configured to work in Codespaces with a Vite proxy setup.
+## CI
 
-1. Start services:
+GitHub Actions runs on every push to `main`:
 
-```bash
-docker compose up -d --build
-docker compose exec backend python manage.py migrate
-docker compose exec backend python manage.py createsuperuser
-```
+- **Backend Tests**: pytest inside a Python 3.12 environment
+- **Frontend Tests**: Vitest
 
-2. In the Ports panel, open forwarded port `5173`.
+Both jobs must pass before Railway deploys.
 
-Notes:
-
-- Frontend API calls default to relative `/api/v1` and are proxied by Vite.
-- `docker-compose.yml` sets `VITE_BACKEND_PROXY_TARGET=http://backend:8000`.
-- Backend `ALLOWED_HOSTS` includes Codespaces and container hostnames for development.
-
-## Local Development (Without Docker)
-
-See service-specific guides:
-
-- Backend setup: `backend/README.md`
-- Frontend setup: `frontend/README.md`
-
-High-level order:
-
-1. Start PostgreSQL
-2. Run Django API on `0.0.0.0:8000`
-3. Run Vite app on `0.0.0.0:5173`
-
-## Repository Structure
-
-```text
-.
-|- backend/
-|  |- core/
-|  |- reports/
-|  |- siteconfig/
-|  |- manage.py
-|  `- requirements.txt
-|- frontend/
-|  |- src/
-|  |- public/
-|  `- package.json
-`- docker-compose.yml
-```
-
-## Common Workflows
-
-### Create your first admin user
-
-```bash
-docker compose exec backend python manage.py createsuperuser
-```
-
-Then sign in at `/admin` in the frontend app.
+## Common Tasks
 
 ### Add categories
 
-New databases have zero categories by default. Add categories from Admin Dashboard so they appear in the report form.
+New databases have no categories by default. Add them from the Admin Dashboard so they appear in the report submission form.
 
-### Run backend tests
-
-```bash
-docker compose exec backend python -m pytest -v
-```
-
-### Run frontend tests
+### Run tests locally
 
 ```bash
-docker compose exec frontend npm test
+# Backend
+cd backend && python -m pytest -v
+
+# Frontend
+cd frontend && npm test
 ```
-
-## Environment Notes
-
-Frontend supports:
-
-- `VITE_API_URL` (optional): full API base URL, defaults to `/api/v1`
-- `VITE_BACKEND_PROXY_TARGET` (dev proxy target, defaults to `http://localhost:8000`)
-
-Backend supports:
-
-- `DEBUG`, `SECRET_KEY`, `ALLOWED_HOSTS`
-- `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`, `DB_SSLMODE`
-- `CORS_ALLOWED_ORIGINS`, `CSRF_TRUSTED_ORIGINS`
-
-## Troubleshooting
-
-### Frontend shows Axios Network Error
-
-- Confirm containers are up: `docker compose ps`
-- Confirm frontend is opened through forwarded port in Codespaces
-- Confirm backend is reachable: `http://localhost:8000/api/v1/categories/`
-
-### `Failed to fetch site settings` with status 400
-
-- Usually host validation issue. Ensure backend container is recreated with current `ALLOWED_HOSTS` in `docker-compose.yml`.
-
-### Categories not visible on report form
-
-- Categories endpoint is empty. Add categories from admin UI.
 
 ## License
 
-This project is licensed under the terms in `LICENSE`.
+MIT — see [LICENSE](LICENSE).
