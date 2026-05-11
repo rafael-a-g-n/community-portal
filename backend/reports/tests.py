@@ -52,7 +52,7 @@ class TestCategoryListEndpoint:
         """Test that each category has expected fields."""
         response = api_client.get("/api/v1/categories/")
         data = response.json()
-        expected_fields = {"id", "name", "slug", "icon"}
+        expected_fields = {"id", "name", "name_pt", "slug", "icon"}
         actual_fields = set(data[0].keys())
         assert actual_fields == expected_fields
 
