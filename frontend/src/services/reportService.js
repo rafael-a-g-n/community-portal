@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from './authService';
+import { getToken, logout } from './authService';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 const API_ORIGIN = API_BASE_URL.startsWith('http')
@@ -19,6 +19,17 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// If a stored token is rejected by the server, clear it so public pages still load
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      logout();
+    }
+    return Promise.reject(error);
+  }
+);
 
 export function normalizeMediaUrl(url) {
   if (!url) return undefined;
