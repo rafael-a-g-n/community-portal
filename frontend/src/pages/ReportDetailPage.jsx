@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { reportService } from '../services/reportService';
+import { reportService, normalizeMediaUrl } from '../services/reportService';
 import StatusBadge from '../components/StatusBadge';
 import {
   ArrowLeft,
@@ -67,7 +67,7 @@ export default function ReportDetailPage() {
   }
 
   const category = typeof report.category === 'object' ? report.category : { name: 'Unknown' };
-  const imageUrl = report.photo ?? report.image;
+  const imageUrl = normalizeMediaUrl(report.photo ?? report.image ?? null);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-testid="detail-view">

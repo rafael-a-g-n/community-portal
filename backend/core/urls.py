@@ -17,6 +17,9 @@ urlpatterns = [
     path("api/v1/", include("siteconfig.urls")),
 ]
 
+# Always serve media files (Railway has no external CDN)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 if settings.DEBUG:
     urlpatterns += [
         path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
@@ -31,4 +34,3 @@ if settings.DEBUG:
             name="redoc",
         ),
     ]
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

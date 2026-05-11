@@ -5,10 +5,11 @@ import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
 import StatusBadge from './StatusBadge';
+import { normalizeMediaUrl } from '../services/reportService';
 export default function ReportCard({ report }) {
   const { t, i18n } = useTranslation();
   const category = typeof report.category === 'object' ? report.category : { name: t('status.unknown') };
-  const imageUrl = report.photo ?? report.image;
+  const imageUrl = normalizeMediaUrl(report.photo ?? report.image ?? null);
   
   const categoryName = i18n.language === 'pt' && category.name_pt 
     ? category.name_pt 
