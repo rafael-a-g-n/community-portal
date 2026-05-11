@@ -27,3 +27,5 @@ COPY . /app/
 
 RUN chown -R app:app /app
 USER app
+
+CMD ["sh", "-c", "python manage.py migrate --no-input && gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"]
