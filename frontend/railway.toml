@@ -2,6 +2,6 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "npx serve dist --listen $PORT --no-clipboard"
+startCommand = "npx serve dist --listen tcp://0.0.0.0:$PORT"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
