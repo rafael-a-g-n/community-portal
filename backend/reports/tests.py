@@ -564,3 +564,70 @@ class TestCategoryAdminDelete:
         category = Category.objects.create(name="Safety", icon="⚠️")
         response = api_client.delete(f"/api/v1/categories/{category.pk}/")
         assert response.status_code in [401, 403]
+
+
+@pytest.mark.django_db
+class TestReportTracking:
+    """Test GET /api/v1/reports/track/<uuid:token>/ endpoint."""
+
+    def test_track_valid_token_returns_report(self, api_client):
+        """A valid tracking token returns the matching report."""
+        category = Category.objects.create(name="Lighting", icon="💡")
+        report = Report.objects.create(
+            title="Streetlight broken",
+            description="The streetlight has been broken for a week.",
+            category=category,
+        )
+        response = api_client.get(
+            f"/api/v1/reports/track/{report.tracking_token}/"
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["id"] == str(report.id)
+        assert data["title"] == report.title
+        assert "tracking_token" in data
+
+    def test_track_invalid_token_returns_404(self, api_client):
+        """An invalid tracking token returns 404."""
+        import uuid as uuid_mod
+        fake_token = uuid_mod.uuid4()
+        response = api_client.get(
+            f"/api/v1/reports/track/{fake_token}/"
+        )
+        assert response.status_code == 404
+
+    def test_track_token_returns_read_only_fields(self, api_client):
+        """The tracking endpoint returns read-only data (no write fields exposed)."""
+        category = Category.objects.create(name="Roads", icon="🛣️")
+        report = Report.objects.create(
+            title="Pothole tracking test",
+            description="A pothole to test the tracking endpoint.",
+            category=category,
+        )
+        response = api_client.get(
+            f"/api/v1/reports/track/{report.tracking_token}/"
+        )
+        data = response.json()
+        # Should not include write-only fields
+        assert "category_id" not in data
+        # Should include read-only computed fields
+        assert data["status_display"] is not None
+
+    def test_track_token_created_at_submission(self, api_client):
+        """A newly created report should be trackable via its token."""
+        cat = Category.objects.create(name="Parks", icon="🌳")
+        payload = {
+            "title": "Trackable park issue",
+            "description": "This issue should be trackable after creation.",
+            "category_id": cat.id,
+        }
+        create_resp = api_client.post("/api/v1/reports/", payload, format="json")
+        assert create_resp.status_code == 201
+        created = create_resp.json()
+        token = created.get("tracking_token")
+        assert token is not None
+
+        # Now track using the token
+        track_resp = api_client.get(f"/api/v1/reports/track/{token}/")
+        assert track_resp.status_code == 200
+        assert track_resp.json()["id"] == created["id"]

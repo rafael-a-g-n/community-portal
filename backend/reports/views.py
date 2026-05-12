@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import (
     ListCreateAPIView,
+    RetrieveAPIView,
     RetrieveUpdateDestroyAPIView,
 )
 from rest_framework.permissions import BasePermission
@@ -280,3 +281,26 @@ class ReportDetailView(RetrieveUpdateDestroyAPIView):
         if self.request.method in ("PATCH", "DELETE"):
             return [IsAdminUser()]
         return [AllowAny()]
+
+
+@extend_schema_view(
+    retrieve=extend_schema(
+        summary="Track report by token",
+        description=(
+            "Public endpoint that returns a single report identified by its "
+            "anonymous tracking token. Used by citizens who did not create an "
+            "account to follow up on their report."
+        ),
+        responses={
+            200: ReportSerializer,
+            404: OpenApiResponse(description="Report not found for this token."),
+        },
+    ),
+)
+class ReportTrackView(RetrieveAPIView):
+    """Look up a report by its anonymous tracking token (public)."""
+
+    queryset = Report.objects.select_related("category").all()
+    serializer_class = ReportSerializer
+    lookup_field = "tracking_token"
+    lookup_url_kwarg = "token"

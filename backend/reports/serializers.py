@@ -69,10 +69,11 @@ class ReportSerializer(serializers.ModelSerializer):
             "status_display",
             "resolution_comment",
             "photo",
+            "tracking_token",
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at"]
+        read_only_fields = ["id", "tracking_token", "created_at", "updated_at"]
 
     def get_status_display(self, obj: Report) -> str:
         return obj.get_status_display()

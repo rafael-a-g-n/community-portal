@@ -5,6 +5,7 @@ from .views import (
     CategoryAdminDetailView,
     ReportListCreateView,
     ReportDetailView,
+    ReportTrackView,
 )
 
 urlpatterns = [
@@ -12,4 +13,5 @@ urlpatterns = [
     path("categories/<int:pk>/", CategoryAdminDetailView.as_view(), name="category-detail"),
     path("reports/", ReportListCreateView.as_view(), name="report-list-create"),
     path("reports/<uuid:pk>/", ReportDetailView.as_view(), name="report-detail"),
+    path("reports/track/<uuid:token>/", ReportTrackView.as_view(), name="report-track"),
 ]
