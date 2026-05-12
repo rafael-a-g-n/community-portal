@@ -1,10 +1,9 @@
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, BasePermission, IsAdminUser
 
-from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
-
 from .models import ContactSubmission, SiteSettings
-from .serializers import SiteSettingsSerializer, ContactSubmissionSerializer
+from .serializers import ContactSubmissionSerializer, SiteSettingsSerializer
 
 
 @extend_schema_view(

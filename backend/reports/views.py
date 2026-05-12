@@ -1,11 +1,18 @@
 import csv
 from datetime import timedelta
 
+from auditlog.models import AuditLog
 from django.db.models import Count, QuerySet
 from django.db.models.deletion import ProtectedError
 from django.http import StreamingHttpResponse
 from django.utils import timezone
-
+from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status as http_status
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -19,15 +26,6 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle, BaseThrottle
 from rest_framework.views import APIView
 
-from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import (
-    OpenApiParameter,
-    OpenApiResponse,
-    extend_schema,
-    extend_schema_view,
-)
-
-from auditlog.models import AuditLog
 from .filters import ReportFilter
 from .models import Category, Report
 from .serializers import (

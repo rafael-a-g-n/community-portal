@@ -105,7 +105,7 @@ describe('AdminDashboard', () => {
     fireEvent.click(screen.getByTestId('save-btn'));
 
     await waitFor(() => {
-      expect(reportService.updateReport).toHaveBeenCalledWith('uuid-1', expect.any(Object));
+      expect(reportService.updateReport).toHaveBeenCalledWith('uuid-1', expect.any(FormData), false);
       expect(screen.queryByTestId('edit-drawer')).not.toBeInTheDocument();
     });
   });
