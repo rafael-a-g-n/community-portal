@@ -41,16 +41,8 @@ export default function Footer() {
             </Link>
           </div>
 
-          <p className="text-sm text-gray-400 flex flex-col sm:flex-row gap-1 sm:gap-2 text-center sm:text-left">
-            <span>
-              © {new Date().getFullYear()} {localizedSettings?.site_name}. {t('nav.rightsReserved')}
-            </span>
-            {localizedSettings?.footer_copyright_text && (
-              <span className="hidden sm:inline">| {localizedSettings?.footer_copyright_text}</span>
-            )}
-            {localizedSettings?.footer_copyright_text && (
-              <span className="sm:hidden">{localizedSettings?.footer_copyright_text}</span>
-            )}
+          <p className="text-sm text-gray-400 dark:text-gray-500">
+            © {new Date().getFullYear()} {localizedSettings?.site_name}. {t('nav.rightsReserved')}
           </p>
         </div>
       </div>
