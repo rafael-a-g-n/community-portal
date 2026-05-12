@@ -101,7 +101,7 @@ export default function HomePage() {
         <motion.h1 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 sm:text-5xl tracking-tight mb-4"
+          className="text-4xl font-extrabold sm:text-5xl tracking-tight mb-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400"
         >
           {localizedSettings?.hero_title}
         </motion.h1>
