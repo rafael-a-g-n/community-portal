@@ -61,8 +61,8 @@ export default function ShareButtons({ title, description, photo, url }) {
         <meta property="og:type" content="article" />
       </Helmet>
 
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8">
-        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-5">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 sm:p-8">
+        <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-5">
           {t('share.title')}
         </h3>
 
@@ -77,8 +77,8 @@ export default function ShareButtons({ title, description, photo, url }) {
                 rel="noopener noreferrer"
                 aria-label={t('share.shareOn', { platform: platform.label })}
                 className={cn(
-                  'inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200',
-                  'text-sm font-semibold text-gray-700 bg-white',
+                  'inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700',
+                  'text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900',
                   'transition-all duration-200 hover:shadow-md',
                   platform.color,
                 )}
@@ -93,11 +93,11 @@ export default function ShareButtons({ title, description, photo, url }) {
             onClick={handleCopyLink}
             aria-label={t('share.copyLink')}
             className={cn(
-              'inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200',
+              'inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700',
               'text-sm font-semibold transition-all duration-200 hover:shadow-md',
               copied
-                ? 'bg-green-50 border-green-300 text-green-700'
-                : 'text-gray-700 bg-white hover:bg-gray-50',
+                ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-800 text-green-700 dark:text-green-300'
+                : 'text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800',
             )}
           >
             {copied ? (
