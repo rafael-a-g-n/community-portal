@@ -126,17 +126,17 @@ export default function AdminDashboard() {
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
-    <div className="min-h-screen bg-gray-50" data-testid="admin-dashboard">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-800" data-testid="admin-dashboard">
       {/* Top Bar */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-30">
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
               <ClipboardList className="w-4 h-4 text-white" />
             </div>
             <div>
-              <span className="font-extrabold text-gray-900 text-lg">{t('admin.dashboard')}</span>
-              <span className="ml-2 text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
+              <span className="font-extrabold text-gray-900 dark:text-gray-100 text-lg">{t('admin.dashboard')}</span>
+              <span className="ml-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full border border-indigo-100 dark:border-indigo-900/30">
                 {totalCount} {t('admin.reportsTab')}
               </span>
             </div>
@@ -145,13 +145,13 @@ export default function AdminDashboard() {
             <button
               onClick={fetchReports}
               title="Refresh"
-              className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+              className="p-2 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
             >
               <LogOut className="w-4 h-4" />
               {t('nav.logout')}
@@ -161,14 +161,14 @@ export default function AdminDashboard() {
       </header>
 
       {/* Sub-header Tabs */}
-      <div className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex gap-6">
           <button
             onClick={() => setActiveTab('reports')}
             className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'reports'
                 ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             <LayoutDashboard className="w-4 h-4" />
@@ -179,7 +179,7 @@ export default function AdminDashboard() {
             className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'analytics'
                 ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             <BarChart className="w-4 h-4" />
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
             className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'categories'
                 ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             <Tag className="w-4 h-4" />
@@ -201,7 +201,7 @@ export default function AdminDashboard() {
             className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'settings'
                 ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             <Settings className="w-4 h-4" />
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
                 <select
                   value={statusFilter}
                   onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-                  className="pl-4 pr-10 py-2.5 text-sm font-semibold border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
+                  className="pl-4 pr-10 py-2.5 text-sm font-semibold border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
                   aria-label={t('status.all')}
                 >
                   <option value="">{t('status.all')}</option>
@@ -227,17 +227,17 @@ export default function AdminDashboard() {
                   <option value="in_progress">{t('status.in_progress')}</option>
                   <option value="resolved">{t('status.resolved')}</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
               </div>
 
               <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
                 <input
                   type="text"
                   placeholder={t('common.search')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             </div>
@@ -246,7 +246,7 @@ export default function AdminDashboard() {
             <div className="flex justify-end mb-4">
               <a
                 href={`${import.meta.env.VITE_API_URL || '/api/v1'}/admin/reports/export/`}
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl border border-indigo-100 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-xl border border-indigo-100 dark:border-indigo-900/30 transition-colors"
               >
                 <Download className="w-4 h-4" />
                 {t('admin.exportCSV')}
@@ -255,45 +255,45 @@ export default function AdminDashboard() {
 
             {/* Table */}
             {error && (
-              <div className="flex items-center gap-2 bg-red-50 text-red-700 border border-red-200 rounded-2xl px-5 py-4 text-sm mb-6" role="alert">
+              <div className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-2xl px-5 py-4 text-sm mb-6" role="alert">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 {error}
               </div>
             )}
 
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
               {loading ? (
                 <div className="flex justify-center items-center py-24" data-testid="dashboard-loader">
                   <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
                 </div>
               ) : reports.length === 0 ? (
-                <div className="text-center py-24 text-gray-400" data-testid="no-reports">
+                <div className="text-center py-24 text-gray-400 dark:text-gray-500" data-testid="no-reports">
                   <ClipboardList className="w-12 h-12 mx-auto mb-3 opacity-30" />
                   <p className="font-semibold">{t('admin.noReports')}</p>
                 </div>
               ) : (
                 <table className="w-full text-sm" data-testid="reports-table">
-                  <thead className="bg-gray-50 border-b border-gray-100">
+                  <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
                     <tr>
-                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{t('admin.table.title')}</th>
-                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{t('admin.table.category')}</th>
-                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{t('admin.table.status')}</th>
-                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{t('admin.table.date')}</th>
-                      <th className="px-5 py-3.5 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">{t('admin.table.action')}</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('admin.table.title')}</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('admin.table.category')}</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('admin.table.status')}</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('admin.table.date')}</th>
+                      <th className="px-5 py-3.5 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('admin.table.action')}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50">
+                  <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                     {reports.map((report) => (
-                      <tr key={report.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={report.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                         <td className="px-5 py-4">
-                          <p className="font-semibold text-gray-900 truncate max-w-xs">{report.title}</p>
+                          <p className="font-semibold text-gray-900 dark:text-gray-100 truncate max-w-xs">{report.title}</p>
                           {report.resolution_comment && (
                             <p className="text-xs text-green-600 mt-0.5 truncate max-w-xs">
                               ✓ Comment added
                             </p>
                           )}
                         </td>
-                        <td className="px-5 py-4 text-gray-500">
+                        <td className="px-5 py-4 text-gray-500 dark:text-gray-400">
                           {typeof report.category === 'object' 
                             ? (i18n.language === 'pt' && report.category.name_pt ? report.category.name_pt : report.category.name)
                             : report.category}
@@ -301,14 +301,14 @@ export default function AdminDashboard() {
                         <td className="px-5 py-4">
                           <StatusBadge status={report.status} />
                         </td>
-                        <td className="px-5 py-4 text-gray-400">
+                        <td className="px-5 py-4 text-gray-400 dark:text-gray-500">
                           {new Date(report.created_at).toLocaleDateString(i18n.language)}
                         </td>
                         <td className="px-5 py-4 text-right">
                           <button
                             onClick={() => setSelectedReport(report)}
                             data-testid={`edit-btn-${report.id}`}
-                            className="px-3 py-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-100"
+                            className="px-3 py-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg transition-colors border border-indigo-100 dark:border-indigo-900/30"
                           >
                             {t('common.manage')}
                           </button>
@@ -326,17 +326,17 @@ export default function AdminDashboard() {
                 <button
                   disabled={page === 1}
                   onClick={() => setPage((p) => p - 1)}
-                  className="px-4 py-2 text-sm font-semibold rounded-xl border border-gray-200 disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 text-sm font-semibold rounded-xl border border-gray-200 dark:border-gray-700 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   Previous
                 </button>
-                <span className="text-sm text-gray-500 font-medium">
+                <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                   Page {page} of {totalPages}
                 </span>
                 <button
                   disabled={page === totalPages}
                   onClick={() => setPage((p) => p + 1)}
-                  className="px-4 py-2 text-sm font-semibold rounded-xl border border-gray-200 disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 text-sm font-semibold rounded-xl border border-gray-200 dark:border-gray-700 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   Next
                 </button>

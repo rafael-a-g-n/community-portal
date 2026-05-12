@@ -72,9 +72,9 @@ export default function SiteSettingsManager() {
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-6">
+    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold text-gray-900">{t('admin.siteSettingsCms')}</h3>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t('admin.siteSettingsCms')}</h3>
         <button
           onClick={handleSave}
           disabled={saving}
@@ -87,14 +87,14 @@ export default function SiteSettingsManager() {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 bg-red-50 text-red-700 border border-red-200 rounded-2xl px-5 py-4 text-sm mb-6" role="alert">
+        <div className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-2xl px-5 py-4 text-sm mb-6" role="alert">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           {error}
         </div>
       )}
 
       {success && (
-        <div className="flex items-center gap-2 bg-green-50 text-green-700 border border-green-200 rounded-2xl px-5 py-4 text-sm mb-6" role="alert">
+        <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800 rounded-2xl px-5 py-4 text-sm mb-6" role="alert">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           Settings successfully updated. Let's make changes!
         </div>
@@ -103,20 +103,20 @@ export default function SiteSettingsManager() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {fields.map((f) => (
           <div key={f.name} className={`${f.type === 'textarea' ? 'col-span-1 md:col-span-2' : ''}`}>
-            <label className="block text-sm font-bold text-gray-700 mb-2">{f.label}</label>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">{f.label}</label>
             {f.type === 'textarea' ? (
               <textarea
                 value={formData[f.name] || ''}
                 onChange={(e) => handleChange(f.name, e.target.value)}
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm resize-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 outline-none"
+                className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl text-sm resize-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 dark:bg-gray-800 outline-none"
               />
             ) : (
               <input
                 type="text"
                 value={formData[f.name] || ''}
                 onChange={(e) => handleChange(f.name, e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 bg-gray-50 outline-none"
+                className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 bg-gray-50 dark:bg-gray-800 outline-none"
               />
             )}
           </div>
