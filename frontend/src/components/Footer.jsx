@@ -7,7 +7,7 @@ export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="bg-white border-t border-gray-100 py-12 mt-20">
+    <footer className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-12 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center space-x-2">
@@ -21,22 +21,22 @@ export default function Footer() {
                   .toUpperCase()}
               </span>
             </div>
-            <span className="text-lg font-bold tracking-tight text-gray-900">
+            <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
               {localizedSettings?.site_name}
             </span>
           </div>
 
-          <div className="flex space-x-6 text-sm font-medium text-gray-500">
-            <Link to="/privacy" className="hover:text-indigo-600 transition-colors">
+          <div className="flex space-x-6 text-sm font-medium text-gray-500 dark:text-gray-400">
+            <Link to="/privacy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               {t('nav.privacyPolicy')}
             </Link>
-            <Link to="/terms" className="hover:text-indigo-600 transition-colors">
+            <Link to="/terms" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               {t('nav.termsOfService')}
             </Link>
-            <Link to="/contact" className="hover:text-indigo-600 transition-colors">
+            <Link to="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               {t('nav.contact')}
             </Link>
-            <Link to="/track" className="hover:text-indigo-600 transition-colors">
+            <Link to="/track" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               {t('track.title')}
             </Link>
           </div>

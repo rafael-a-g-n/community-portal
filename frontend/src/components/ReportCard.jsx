@@ -20,10 +20,10 @@ export default function ReportCard({ report }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}
-      className="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
+      className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-xl dark:shadow-gray-900/50 dark:hover:shadow-gray-900/80 transition-all duration-300"
     >
       <Link to={`/reports/${report.id}`}>
-        <div className="aspect-video w-full overflow-hidden bg-gray-100 relative">
+        <div className="aspect-video w-full overflow-hidden bg-gray-100 dark:bg-gray-800 relative">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -32,7 +32,7 @@ export default function ReportCard({ report }) {
               referrerPolicy="no-referrer"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
+            <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600">
               <MapPin className="w-12 h-12 opacity-20" />
             </div>
           )}
@@ -42,25 +42,25 @@ export default function ReportCard({ report }) {
         </div>
 
         <div className="p-5">
-          <div className="flex items-center space-x-2 text-xs font-medium text-indigo-600 mb-2">
+          <div className="flex items-center space-x-2 text-xs font-medium text-indigo-600 dark:text-indigo-400 mb-2">
             <Tag className="w-3 h-3" />
             <span>{categoryName || t('status.unknown')}</span>
           </div>
           
-          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-indigo-600 transition-colors">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
             {report.title}
           </h3>
           
-          <p className="text-sm text-gray-500 mb-4 line-clamp-2 min-h-[2.5rem]">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2 min-h-[2.5rem]">
             {report.description}
           </p>
 
-          <div className="flex items-center justify-between pt-4 border-t border-gray-50 text-xs text-gray-400">
+          <div className="flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-800 text-xs text-gray-400 dark:text-gray-500">
             <div className="flex items-center">
               <Calendar className="w-3 h-3 mr-1" />
               {new Date(report.created_at).toLocaleDateString(i18n.language)}
             </div>
-            <span className="font-medium text-indigo-600 group-hover:translate-x-1 transition-transform">
+            <span className="font-medium text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
               {t('home.viewDetail')} →
             </span>
           </div>
