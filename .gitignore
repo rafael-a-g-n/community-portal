@@ -24,6 +24,7 @@ env/
 .ruff_cache/
 .coverage
 htmlcov/
+.kilo/
 
 # Django
 *.log
