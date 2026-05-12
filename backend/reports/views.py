@@ -1,7 +1,6 @@
 import csv
 from datetime import timedelta
 
-from auditlog.models import AuditLog
 from django.db.models import Count, QuerySet
 from django.db.models.deletion import ProtectedError
 from django.http import StreamingHttpResponse
@@ -26,6 +25,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle, BaseThrottle
 from rest_framework.views import APIView
 
+from auditlog.models import AuditLog
 from .filters import ReportFilter
 from .models import Category, Report
 from .serializers import (
