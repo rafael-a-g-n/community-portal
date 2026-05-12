@@ -12,24 +12,24 @@ export default function TermsPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600 mb-8 transition-colors"
+        className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-8 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
         {t('common.back')}
       </button>
 
-      <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 sm:p-12">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 sm:p-12">
         <div className="flex items-center gap-4 mb-8">
           <div className="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center">
-            <FileText className="w-6 h-6 text-indigo-600" />
+            <FileText className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
           </div>
-          <h1 className="text-3xl font-extrabold text-gray-900">{t('nav.termsOfService')}</h1>
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">{t('nav.termsOfService')}</h1>
         </div>
-        <div className="prose prose-indigo max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap">
+        <div className="prose prose-indigo max-w-none text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap">
           {localizedSettings?.terms_body ? (
             <p>{localizedSettings.terms_body}</p>
           ) : (
-            <p className="text-gray-400 italic">{t('contact.noContent')}</p>
+            <p className="text-gray-400 dark:text-gray-500 italic">{t('contact.noContent')}</p>
           )}
         </div>
       </div>

@@ -5,10 +5,10 @@ export default function AboutPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-      <h1 className="text-4xl font-bold mb-6">
+      <h1 className="text-4xl font-bold mb-6 dark:text-gray-100">
         {localizedSettings?.about_title}
       </h1>
-      <p className="text-lg text-gray-600 leading-relaxed whitespace-pre-wrap">
+      <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap">
         {localizedSettings?.about_body}
       </p>
     </div>

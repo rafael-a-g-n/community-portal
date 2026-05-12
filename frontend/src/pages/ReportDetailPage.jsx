@@ -47,8 +47,8 @@ export default function ReportDetailPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-40" data-testid="detail-loader">
-        <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mb-4" />
-        <p className="text-gray-500 font-medium">{t('common.loading')}</p>
+        <Loader2 className="w-12 h-12 text-indigo-600 dark:text-indigo-400 animate-spin mb-4" />
+        <p className="text-gray-500 dark:text-gray-400 font-medium">{t('common.loading')}</p>
       </div>
     );
   }
@@ -57,8 +57,8 @@ export default function ReportDetailPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center" data-testid="detail-error">
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('common.error')}</h2>
-        <p className="text-gray-600 mb-8">{error || t('admin.noReports')}</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t('common.error')}</h2>
+        <p className="text-gray-600 dark:text-gray-400 mb-8">{error || t('admin.noReports')}</p>
         <button
           onClick={() => navigate('/')}
           className="px-8 py-3 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 transition-all"
@@ -76,7 +76,7 @@ export default function ReportDetailPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-testid="detail-view">
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600 mb-8 transition-colors"
+        className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-8 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
         {t('common.back')}
@@ -88,9 +88,9 @@ export default function ReportDetailPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden"
+            className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden"
           >
-            <div className="aspect-video w-full bg-gray-100 relative">
+            <div className="aspect-video w-full bg-gray-100 dark:bg-gray-800 relative">
               {imageUrl ? (
                 <img
                   src={imageUrl}
@@ -99,7 +99,7 @@ export default function ReportDetailPage() {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
                   <MapPin className="w-20 h-20 opacity-10" />
                 </div>
               )}
@@ -108,39 +108,39 @@ export default function ReportDetailPage() {
             <div className="p-8 sm:p-10">
               <div className="flex flex-wrap items-center gap-3 mb-6">
                 <StatusBadge status={report.status} />
-                <div className="flex items-center px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold border border-indigo-100">
+                <div className="flex items-center px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-bold border border-indigo-100 dark:border-indigo-800">
                   <Tag className="w-3 h-3 mr-1.5" />
                   {i18n.language === 'pt' && category.name_pt ? category.name_pt : category.name}
                 </div>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-6 leading-tight">
                 {report.title}
               </h1>
 
-              <div className="prose prose-indigo max-w-none text-gray-600 leading-relaxed mb-10">
+              <div className="prose prose-indigo max-w-none text-gray-600 dark:text-gray-400 leading-relaxed mb-10">
                 <p className="whitespace-pre-wrap">{report.description}</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-6 pt-8 border-t border-gray-100">
+              <div className="grid grid-cols-2 gap-6 pt-8 border-t border-gray-100 dark:border-gray-700">
                 <div className="flex items-start space-x-3">
-                  <div className="p-2 bg-gray-50 rounded-lg">
-                    <Calendar className="w-5 h-5 text-gray-400" />
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <Calendar className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{t('admin.table.date')}</p>
-                    <p className="text-sm font-semibold text-gray-700">
+                    <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">{t('admin.table.date')}</p>
+                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                       {new Date(report.created_at).toLocaleDateString(i18n.language)}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="p-2 bg-gray-50 rounded-lg">
-                    <Clock className="w-5 h-5 text-gray-400" />
+                  <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <Clock className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{t('common.updated')}</p>
-                    <p className="text-sm font-semibold text-gray-700">
+                    <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">{t('common.updated')}</p>
+                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                       {new Date(report.updated_at).toLocaleDateString(i18n.language)}
                     </p>
                   </div>
@@ -149,12 +149,12 @@ export default function ReportDetailPage() {
 
               {/* Map Link */}
               {report.latitude && report.longitude && (
-                <div className="pt-6 border-t border-gray-100 mt-6">
+                <div className="pt-6 border-t border-gray-100 dark:border-gray-700 mt-6">
                   <a
                     href={`https://www.openstreetmap.org/?mlat=${report.latitude}&mlon=${report.longitude}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-50 text-indigo-700 rounded-xl text-sm font-semibold hover:bg-indigo-100 transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-xl text-sm font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
                   >
                     <MapPin className="w-4 h-4" />
                     {report.address || `${report.latitude}, ${report.longitude}`}
@@ -208,9 +208,9 @@ export default function ReportDetailPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
-            className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100"
+            className="bg-white dark:bg-gray-900 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"
           >
-            <h3 className="font-bold text-gray-900 mb-4 text-sm uppercase tracking-wider text-gray-500">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">
               {t('form.status')}
             </h3>
             <StatusBadge status={report.status} />
