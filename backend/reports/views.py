@@ -1,5 +1,10 @@
-from django.db.models import QuerySet
+import csv
+
+from django.db.models import Count, QuerySet
 from django.db.models.deletion import ProtectedError
+from django.http import StreamingHttpResponse
+from django.utils import timezone
+from datetime import timedelta
 
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -13,6 +18,7 @@ from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.throttling import BaseThrottle
 from rest_framework.throttling import AnonRateThrottle
+from rest_framework.views import APIView
 from rest_framework import status as http_status
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -26,6 +32,8 @@ from drf_spectacular.utils import (
 from .filters import ReportFilter
 from .models import Category, Comment, Report
 from .serializers import CategorySerializer, CategoryWriteSerializer, CommentSerializer, ReportSerializer
+
+from auditlog.models import AuditLog
 
 
 @extend_schema_view(
@@ -123,10 +131,21 @@ class CategoryAdminDetailView(RetrieveUpdateDestroyAPIView):
             return [IsAdminUser()]
         return [AllowAny()]
 
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        AuditLog.objects.create(
+            actor=self.request.user,
+            action="update",
+            target_model="Category",
+            target_id=str(serializer.instance.id),
+            summary=f"Updated category '{serializer.instance.name}'",
+        )
+
     def destroy(self, request, *args, **kwargs) -> Response:
         """Block deletion if any reports are linked to this category."""
         instance: Category = self.get_object()
         try:
+            name = instance.name
             instance.delete()
         except ProtectedError:
             report_count: int = Report.objects.filter(category=instance).count()
@@ -139,6 +158,13 @@ class CategoryAdminDetailView(RetrieveUpdateDestroyAPIView):
                     )
                 }
             )
+        AuditLog.objects.create(
+            actor=request.user,
+            action="delete",
+            target_model="Category",
+            target_id=str(instance.id),
+            summary=f"Deleted category '{name}'",
+        )
         return Response(status=http_status.HTTP_204_NO_CONTENT)
 
 
@@ -282,6 +308,27 @@ class ReportDetailView(RetrieveUpdateDestroyAPIView):
             return [IsAdminUser()]
         return [AllowAny()]
 
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        AuditLog.objects.create(
+            actor=self.request.user,
+            action="update",
+            target_model="Report",
+            target_id=str(serializer.instance.id),
+            summary=f"Updated report '{serializer.instance.title}'",
+        )
+
+    def perform_destroy(self, instance):
+        title = instance.title
+        AuditLog.objects.create(
+            actor=self.request.user,
+            action="delete",
+            target_model="Report",
+            target_id=str(instance.id),
+            summary=f"Deleted report '{title}'",
+        )
+        instance.delete()
+
 
 @extend_schema_view(
     retrieve=extend_schema(
@@ -304,3 +351,61 @@ class ReportTrackView(RetrieveAPIView):
     serializer_class = ReportSerializer
     lookup_field = "tracking_token"
     lookup_url_kwarg = "token"
+
+
+@extend_schema_view(
+    get=extend_schema(
+        summary="Admin analytics stats",
+        description="Returns aggregate stats about reports for the admin dashboard. Admin only.",
+    ),
+)
+class AdminStatsView(RetrieveAPIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        total = Report.objects.count()
+        by_status = Report.objects.values("status").annotate(count=Count("id"))
+        by_category = Report.objects.values("category__name", "category__name_pt").annotate(count=Count("id"))
+
+        thirty_days_ago = timezone.now() - timedelta(days=30)
+        per_day = (
+            Report.objects.filter(created_at__gte=thirty_days_ago)
+            .extra(select={"date": "DATE(created_at)"})
+            .values("date")
+            .annotate(count=Count("id"))
+            .order_by("date")
+        )
+
+        resolved = Report.objects.filter(status=Report.Status.RESOLVED)
+        avg_resolution = None
+        if resolved.exists():
+            avg_resolution = resolved.count()
+
+        return Response({
+            "total_reports": total,
+            "by_status": {s["status"]: s["count"] for s in by_status},
+            "by_category": list(by_category),
+            "reports_per_day": list(per_day),
+            "avg_resolution_time_days": avg_resolution,
+        })
+
+
+class ReportExportView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        reports = Report.objects.select_related("category").all()
+
+        response = StreamingHttpResponse(
+            content_type="text/csv",
+            headers={"Content-Disposition": 'attachment; filename="reports.csv"'},
+        )
+        writer = csv.writer(response)
+        writer.writerow(["ID", "Title", "Description", "Category", "Status", "Address", "Latitude", "Longitude", "Created", "Updated", "Tracking Token"])
+        for r in reports:
+            writer.writerow([
+                r.id, r.title, r.description, r.category.name, r.status,
+                r.address, r.latitude, r.longitude,
+                r.created_at.isoformat(), r.updated_at.isoformat(), r.tracking_token
+            ])
+        return response

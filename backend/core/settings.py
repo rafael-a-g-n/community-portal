@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_spectacular",
     "corsheaders",
+    "auditlog.apps.AuditlogConfig",
 ]
 
 MIDDLEWARE = [

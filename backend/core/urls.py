@@ -16,6 +16,7 @@ urlpatterns = [
     path("api/v1/auth/login/", RateLimitedObtainAuthToken.as_view(), name="api_token_auth"),
     path("api/v1/", include("reports.urls")),
     path("api/v1/", include("siteconfig.urls")),
+    path("api/v1/", include("auditlog.urls")),
 ]
 
 # Always serve media files directly (bypasses DEBUG check in static())
