@@ -108,4 +108,55 @@ describe('reportService', () => {
       expect(api.delete).toHaveBeenCalledWith('/categories/3/');
     });
   });
+
+  describe('getReportByTrackingToken', () => {
+    it('calls GET /reports/track/{token}/ and normalizes response', async () => {
+      const mockReport = { id: 'abc', title: 'Tracked', photo: null };
+      vi.spyOn(api, 'get').mockResolvedValueOnce({ data: mockReport });
+
+      const result = await reportService.getReportByTrackingToken('test-token');
+      expect(api.get).toHaveBeenCalledWith('/reports/track/test-token/');
+      expect(result.title).toBe('Tracked');
+    });
+  });
+
+  describe('getComments', () => {
+    it('calls GET /reports/{id}/comments/', async () => {
+      const mockComments = [{ id: 1, body: 'A comment' }];
+      vi.spyOn(api, 'get').mockResolvedValueOnce({ data: mockComments });
+
+      const result = await reportService.getComments('report-123');
+      expect(api.get).toHaveBeenCalledWith('/reports/report-123/comments/');
+      expect(result).toEqual(mockComments);
+    });
+  });
+
+  describe('createComment', () => {
+    it('calls POST /reports/{id}/comments/ with data', async () => {
+      const commentData = { author_name: 'User', body: 'Nice report!' };
+      vi.spyOn(api, 'post').mockResolvedValueOnce({ data: { id: 1, ...commentData } });
+
+      const result = await reportService.createComment('report-123', commentData);
+      expect(api.post).toHaveBeenCalledWith('/reports/report-123/comments/', commentData);
+      expect(result.body).toBe('Nice report!');
+    });
+  });
+
+  describe('updateReport with multipart', () => {
+    it('sends multipart/form-data when isMultipart is true', async () => {
+      const formData = new FormData();
+      formData.append('title', 'Updated');
+      formData.append('status', 'resolved');
+
+      vi.spyOn(api, 'patch').mockResolvedValueOnce({
+        data: { id: '1', title: 'Updated', photo: null },
+      });
+
+      const result = await reportService.updateReport('1', formData, true);
+      expect(api.patch).toHaveBeenCalledWith('/reports/1/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      expect(result.title).toBe('Updated');
+    });
+  });
 });

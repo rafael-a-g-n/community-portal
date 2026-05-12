@@ -35,4 +35,37 @@ describe('settingsService', () => {
 
     expect(result).toEqual(updated);
   });
+
+  it('getSettings handles network error gracefully', async () => {
+    vi.spyOn(api, 'get').mockRejectedValueOnce(new Error('Network Error'));
+
+    await expect(getSettings()).rejects.toThrow('Network Error');
+  });
+
+  it('updateSettings sends correct content-type for string data', async () => {
+    const payload = { hero_title: 'New Title' };
+    vi.spyOn(api, 'patch').mockResolvedValueOnce({ data: payload });
+
+    await updateSettings(payload);
+    expect(api.patch).toHaveBeenCalledWith('/settings/', payload);
+  });
+
+  it('getSettings returns full settings object with all fields', async () => {
+    const mockSettings = {
+      site_name: 'Test Portal',
+      site_tagline: 'Test tagline',
+      navbar_brand_text: 'Test',
+      hero_title: 'Test Hero',
+      hero_subtitle: 'Test subtitle',
+      hero_cta_text: 'Submit',
+      about_title: 'About',
+      about_body: 'About body',
+    };
+    vi.spyOn(api, 'get').mockResolvedValueOnce({ data: mockSettings });
+
+    const result = await getSettings();
+    expect(Object.keys(result)).toContain('site_name');
+    expect(Object.keys(result)).toContain('hero_title');
+  });
+
 });
