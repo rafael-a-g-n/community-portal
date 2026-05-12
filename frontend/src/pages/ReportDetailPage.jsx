@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { reportService, normalizeMediaUrl } from '../services/reportService';
 import StatusBadge from '../components/StatusBadge';
 import ShareButtons from '../components/ShareButtons';
+import CommentsSection from '../components/CommentsSection';
 import {
   ArrowLeft,
   Calendar,
@@ -12,6 +13,7 @@ import {
   Loader2,
   AlertCircle,
   MessageSquareCheck,
+  ExternalLink,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
@@ -144,10 +146,26 @@ export default function ReportDetailPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Map Link */}
+              {report.latitude && report.longitude && (
+                <div className="pt-6 border-t border-gray-100 mt-6">
+                  <a
+                    href={`https://www.openstreetmap.org/?mlat=${report.latitude}&mlon=${report.longitude}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-50 text-indigo-700 rounded-xl text-sm font-semibold hover:bg-indigo-100 transition-colors"
+                  >
+                    <MapPin className="w-4 h-4" />
+                    {report.address || `${report.latitude}, ${report.longitude}`}
+                    <ExternalLink className="w-3.5 h-3.5 opacity-60" />
+                  </a>
+                </div>
+              )}
             </div>
           </motion.div>
 
-          {/* Resolution Comment ?" shown to all users when present */}
+          {/* Resolution Comment shown to all users when present */}
           {report.resolution_comment && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -170,6 +188,9 @@ export default function ReportDetailPage() {
               </p>
             </motion.div>
           )}
+
+          {/* Comments Section */}
+          <CommentsSection reportId={id} />
 
           {/* Share Buttons */}
           <ShareButtons

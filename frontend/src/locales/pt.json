@@ -9,7 +9,8 @@
     "termsOfService": "Termos de Serviço",
     "contact": "Contacto",
     "rightsReserved": "Todos os direitos reservados.",
-    "contactSupport": "Contactar Suporte"
+    "contactSupport": "Contactar Suporte",
+    "themeToggle": "Alternar tema"
   },
   "common": {
     "loading": "A carregar...",
@@ -43,11 +44,25 @@
     "photo": "Foto",
     "resolutionComment": "Comentário de Resolução",
     "resolutionPlaceholder": "Descreva a ação tomada ou detalhes da resolução...",
-    "publicVisibilityNote": "Este comentário será visível publicamente na página do relato."
+    "publicVisibilityNote": "Este comentário será visível publicamente na página do relato.",
+    "latitude": "Latitude",
+    "longitude": "Longitude"
+  },
+  "comments": {
+    "title": "Comentários",
+    "noComments": "Ainda sem comentários. Seja o primeiro a comentar!",
+    "nameLabel": "O Seu Nome",
+    "namePlaceholder": "Anónimo",
+    "commentLabel": "O Seu Comentário",
+    "commentPlaceholder": "Partilhe a sua opinião...",
+    "submitButton": "Publicar Comentário",
+    "submitting": "A publicar...",
+    "postSuccess": "Comentário publicado!"
   },
   "admin": {
     "dashboard": "Painel de Administração",
     "reportsTab": "Relatos",
+    "analyticsTab": "Análises",
     "categoriesTab": "Categorias",
     "settingsTab": "Definições do Site",
     "editReport": "Editar Relato",
@@ -60,17 +75,27 @@
     "siteSettingsCms": "CMS de Definições",
     "settingsUpdated": "Definições atualizadas com sucesso.",
     "noReports": "Nenhum relato encontrado",
+    "exportCSV": "Exportar CSV",
     "table": {
       "title": "Título",
       "category": "Categoria",
       "status": "Estado",
       "date": "Data",
       "action": "Ação"
+    },
+    "analytics": {
+      "totalReports": "Total de Relatos",
+      "byCategory": "Relatos por Categoria",
+      "noData": "Nenhum dado disponível."
     }
   },
   "home": {
     "latestReports": "Últimos Relatos",
-    "viewDetail": "Ver Detalhes"
+    "viewDetail": "Ver Detalhes",
+    "mapView": "Mostrar no Mapa",
+    "listView": "Mostrar como Lista",
+    "noLocation": "Sem dados de localização",
+    "loadMore": "Carregar Mais"
   },
   "auth": {
     "adminPortal": "Portal de Administração",

@@ -128,4 +128,25 @@ export const reportService = {
   async deleteCategory(id) {
     await api.delete(`/categories/${id}/`);
   },
+
+  /**
+   * Get all comments for a report.
+   * @param {string} reportId - Report UUID
+   * @returns {Promise<Array>} List of comments
+   */
+  async getComments(reportId) {
+    const response = await api.get(`/reports/${reportId}/comments/`);
+    return response.data;
+  },
+
+  /**
+   * Create a comment on a report.
+   * @param {string} reportId - Report UUID
+   * @param {{ author_name?: string, body: string }} data
+   * @returns {Promise<object>} Created comment
+   */
+  async createComment(reportId, data) {
+    const response = await api.post(`/reports/${reportId}/comments/`, data);
+    return response.data;
+  },
 };

@@ -9,7 +9,8 @@
     "termsOfService": "Terms of Service",
     "contact": "Contact",
     "rightsReserved": "All rights reserved.",
-    "contactSupport": "Contact Support"
+    "contactSupport": "Contact Support",
+    "themeToggle": "Toggle theme"
   },
   "common": {
     "loading": "Loading...",
@@ -43,11 +44,25 @@
     "photo": "Photo",
     "resolutionComment": "Resolution Comment",
     "resolutionPlaceholder": "Describe the action taken or resolution details...",
-    "publicVisibilityNote": "This comment will be publicly visible on the report page."
+    "publicVisibilityNote": "This comment will be publicly visible on the report page.",
+    "latitude": "Latitude",
+    "longitude": "Longitude"
+  },
+  "comments": {
+    "title": "Comments",
+    "noComments": "No comments yet. Be the first to comment!",
+    "nameLabel": "Your Name",
+    "namePlaceholder": "Anonymous",
+    "commentLabel": "Your Comment",
+    "commentPlaceholder": "Share your thoughts...",
+    "submitButton": "Post Comment",
+    "submitting": "Posting...",
+    "postSuccess": "Comment posted!"
   },
   "admin": {
     "dashboard": "Admin Dashboard",
     "reportsTab": "Reports",
+    "analyticsTab": "Analytics",
     "categoriesTab": "Categories",
     "settingsTab": "Site Settings",
     "editReport": "Edit Report",
@@ -60,17 +75,27 @@
     "siteSettingsCms": "Site Settings CMS",
     "settingsUpdated": "Settings successfully updated.",
     "noReports": "No reports found",
+    "exportCSV": "Export CSV",
     "table": {
       "title": "Title",
       "category": "Category",
       "status": "Status",
       "date": "Date",
       "action": "Action"
+    },
+    "analytics": {
+      "totalReports": "Total Reports",
+      "byCategory": "Reports by Category",
+      "noData": "No data available."
     }
   },
   "home": {
     "latestReports": "Latest Reports",
-    "viewDetail": "View Details"
+    "viewDetail": "View Details",
+    "mapView": "Show on Map",
+    "listView": "Show as List",
+    "noLocation": "No location data",
+    "loadMore": "Load More"
   },
   "auth": {
     "adminPortal": "Admin Portal",

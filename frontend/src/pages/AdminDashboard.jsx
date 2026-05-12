@@ -18,6 +18,8 @@ import {
   Tag,
   Settings,
   Search,
+  BarChart,
+  Download,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSiteSettings } from '../context/SiteSettingsContext';
@@ -29,6 +31,7 @@ import StatusBadge from '../components/StatusBadge';
 import EditDrawer from '../components/admin/EditDrawer';
 import SiteSettingsManager from '../components/admin/SiteSettingsManager';
 import CategoryManager from '../components/admin/CategoryManager';
+import AnalyticsTab from '../components/admin/AnalyticsTab';
 
 
 
@@ -42,7 +45,7 @@ export default function AdminDashboard() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [categories, setCategories] = useState([]);
-  const [activeTab, setActiveTab] = useState('reports'); // 'reports' | 'categories' | 'settings'
+  const [activeTab, setActiveTab] = useState('reports'); // 'reports' | 'analytics' | 'categories' | 'settings'
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const PAGE_SIZE = 10;
@@ -172,6 +175,17 @@ export default function AdminDashboard() {
             {t('admin.reportsTab')}
           </button>
           <button
+            onClick={() => setActiveTab('analytics')}
+            className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'analytics'
+                ? 'border-indigo-600 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <BarChart className="w-4 h-4" />
+            {t('admin.analyticsTab')}
+          </button>
+          <button
             onClick={() => setActiveTab('categories')}
             className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'categories'
@@ -226,6 +240,17 @@ export default function AdminDashboard() {
                   className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
+            </div>
+
+            {/* Export CSV */}
+            <div className="flex justify-end mb-4">
+              <a
+                href={`${import.meta.env.VITE_API_URL || '/api/v1'}/admin/reports/export/`}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl border border-indigo-100 transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                {t('admin.exportCSV')}
+              </a>
             </div>
 
             {/* Table */}
@@ -317,6 +342,13 @@ export default function AdminDashboard() {
                 </button>
               </div>
             )}
+          </motion.div>
+        )}
+
+        {/* Analytics Tab Contents */}
+        {activeTab === 'analytics' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <AnalyticsTab />
           </motion.div>
         )}
 

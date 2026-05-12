@@ -20,6 +20,8 @@ export default function CreateReportPage() {
     title: '',
     description: '',
     category: '',
+    latitude: '',
+    longitude: '',
   });
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -66,6 +68,8 @@ export default function CreateReportPage() {
       data.append('description', formData.description);
       data.append('category_id', formData.category);
       if (image) data.append('photo', image);
+      if (formData.latitude) data.append('latitude', formData.latitude);
+      if (formData.longitude) data.append('longitude', formData.longitude);
 
       const result = await reportService.createReport(data);
       setSubmittedToken(result.tracking_token);
@@ -219,6 +223,36 @@ export default function CreateReportPage() {
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder={t('createReport.descriptionPlaceholder')}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all resize-none"
+                />
+              </div>
+
+              {/* Latitude */}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">
+                  {t('form.latitude')} <span className="text-gray-400 font-normal lowercase">({t('common.optional')})</span>
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  value={formData.latitude}
+                  onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                  placeholder="e.g., 38.7223"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all"
+                />
+              </div>
+
+              {/* Longitude */}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">
+                  {t('form.longitude')} <span className="text-gray-400 font-normal lowercase">({t('common.optional')})</span>
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  value={formData.longitude}
+                  onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                  placeholder="e.g., -9.1393"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all"
                 />
               </div>
 
