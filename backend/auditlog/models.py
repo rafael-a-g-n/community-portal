@@ -8,7 +8,9 @@ class AuditLog(models.Model):
         ("update", "Update"),
         ("delete", "Delete"),
     ]
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     action = models.CharField(max_length=10, choices=ACTION_CHOICES)
     target_model = models.CharField(max_length=100)
     target_id = models.CharField(max_length=100, blank=True)
