@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { reportService } from '../services/reportService';
-import { Camera, Upload, AlertCircle, Loader2, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Camera, Upload, AlertCircle, Loader2, ArrowLeft, CheckCircle2, ExternalLink } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,7 @@ export default function CreateReportPage() {
   const [fetchingCategories, setFetchingCategories] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [submittedToken, setSubmittedToken] = useState(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -59,16 +60,17 @@ export default function CreateReportPage() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const data = new FormData();
       data.append('title', formData.title);
       data.append('description', formData.description);
       data.append('category_id', formData.category);
       if (image) data.append('photo', image);
 
-      await reportService.createReport(data);
+      const result = await reportService.createReport(data);
+      setSubmittedToken(result.tracking_token);
       setSuccess(true);
-      setTimeout(() => navigate('/'), 2000);
+      setTimeout(() => navigate('/'), 5000);
     } catch (err) {
       if (axios.isAxiosError(err) && err.response?.data) {
         const payload = err.response.data;
@@ -92,7 +94,7 @@ export default function CreateReportPage() {
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto px-4 py-20 text-center">
+      <div className="max-w-lg mx-auto px-4 py-20 text-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -102,12 +104,33 @@ export default function CreateReportPage() {
             <CheckCircle2 className="w-10 h-10 text-emerald-600" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('createReport.successTitle')}</h2>
-          <p className="text-gray-600 mb-8">{t('createReport.successBody')}</p>
+          <p className="text-gray-600 mb-6">{t('createReport.successBody')}</p>
+
+          {submittedToken && (
+            <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 mb-6 text-left">
+              <p className="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-2">
+                {t('track.title')}
+              </p>
+              <div className="flex items-center gap-2 bg-white rounded-xl p-3 border border-indigo-100 mb-3">
+                <code className="text-sm font-mono text-indigo-800 break-all flex-1">
+                  {submittedToken}
+                </code>
+              </div>
+              <Link
+                to={`/track`}
+                className="inline-flex items-center gap-2 text-sm font-bold text-indigo-700 hover:text-indigo-500 transition-colors"
+              >
+                <ExternalLink className="w-4 h-4" />
+                {t('track.trackButton')}
+              </Link>
+            </div>
+          )}
+
           <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-            <motion.div 
+            <motion.div
               initial={{ width: 0 }}
               animate={{ width: '100%' }}
-              transition={{ duration: 2 }}
+              transition={{ duration: 5 }}
               className="bg-emerald-500 h-full"
             />
           </div>
@@ -118,7 +141,7 @@ export default function CreateReportPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <button 
+      <button
         onClick={() => navigate(-1)}
         className="flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600 mb-8 transition-colors"
       >
@@ -208,7 +231,7 @@ export default function CreateReportPage() {
                   {imagePreview ? (
                     <div className="relative w-full aspect-video rounded-xl overflow-hidden">
                       <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                      <button 
+                      <button
                         type="button"
                         onClick={() => { setImage(null); setImagePreview(null); }}
                         className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"

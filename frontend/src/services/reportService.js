@@ -90,6 +90,16 @@ export const reportService = {
   },
 
   /**
+   * Get a report by its anonymous tracking token (public).
+   * @param {string} token - UUID tracking token
+   * @returns {Promise<object>} Normalized report
+   */
+  async getReportByTrackingToken(token) {
+    const response = await api.get(`/reports/track/${token}/`);
+    return normalizeReport(response.data);
+  },
+
+  /**
    * Create a new category (admin only).
    * @param {{ name: string, icon?: string }} data
    * @returns {Promise<object>} Created category

@@ -101,5 +101,17 @@
     "fileLimits": "PNG, JPG, GIF up to 5MB",
     "submitting": "Submitting...",
     "submitButton": "Submit Report"
+  },
+  "track": {
+    "title": "Track Your Report",
+    "subtitle": "Enter the tracking token you received after submitting your report to check its status.",
+    "tokenPlaceholder": "Paste your tracking token here...",
+    "trackButton": "Track Report",
+    "notFound": "No report found with this tracking token. Please check the token and try again.",
+    "enterToken": "Enter a tracking token above to look up your report."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or has been moved."
   }
 }

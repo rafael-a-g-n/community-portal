@@ -101,5 +101,17 @@
     "fileLimits": "PNG, JPG, GIF até 5MB",
     "submitting": "A submeter...",
     "submitButton": "Submeter Relato"
+  },
+  "track": {
+    "title": "Acompanhe o Seu Relato",
+    "subtitle": "Insira o token de acompanhamento que recebeu após submeter o seu relato para verificar o estado.",
+    "tokenPlaceholder": "Cole aqui o seu token de acompanhamento...",
+    "trackButton": "Acompanhar Relato",
+    "notFound": "Nenhum relato encontrado com este token. Verifique o token e tente novamente.",
+    "enterToken": "Insira um token de acompanhamento acima para consultar o seu relato."
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "description": "A página que procura não existe ou foi movida."
   }
 }

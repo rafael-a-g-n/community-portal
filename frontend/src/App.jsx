@@ -6,6 +6,9 @@ import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import PublicLayout from './components/PublicLayout';
 import AboutPage from './pages/AboutPage';
+import TrackReportPage from './pages/TrackReportPage';
+import NotFoundPage from './pages/NotFoundPage';
+
 
 export default function App() {
 
@@ -22,6 +25,8 @@ export default function App() {
           <Route path="/create" element={<CreateReportPage />} />
           <Route path="/reports/:id" element={<ReportDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/track" element={<TrackReportPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </Router>

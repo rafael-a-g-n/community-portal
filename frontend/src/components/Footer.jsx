@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSiteSettings } from '../context/SiteSettingsContext';
 
@@ -26,15 +27,18 @@ export default function Footer() {
           </div>
 
           <div className="flex space-x-6 text-sm font-medium text-gray-500">
-            <a href="#" className="hover:text-indigo-600 transition-colors">
+            <Link to="/privacy" className="hover:text-indigo-600 transition-colors">
               {t('nav.privacyPolicy')}
-            </a>
-            <a href="#" className="hover:text-indigo-600 transition-colors">
+            </Link>
+            <Link to="/terms" className="hover:text-indigo-600 transition-colors">
               {t('nav.termsOfService')}
-            </a>
-            <a href="#" className="hover:text-indigo-600 transition-colors">
+            </Link>
+            <Link to="/contact" className="hover:text-indigo-600 transition-colors">
               {t('nav.contact')}
-            </a>
+            </Link>
+            <Link to="/track" className="hover:text-indigo-600 transition-colors">
+              {t('track.title')}
+            </Link>
           </div>
 
           <p className="text-sm text-gray-400 flex flex-col sm:flex-row gap-1 sm:gap-2 text-center sm:text-left">
