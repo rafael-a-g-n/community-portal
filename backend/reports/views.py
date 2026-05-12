@@ -33,7 +33,6 @@ from .models import Category, Report
 from .serializers import (
     CategorySerializer,
     CategoryWriteSerializer,
-    CommentSerializer,
     ReportSerializer,
 )
 
@@ -358,7 +357,10 @@ class ReportTrackView(RetrieveAPIView):
 @extend_schema_view(
     get=extend_schema(
         summary="Admin analytics stats",
-        description="Returns aggregate stats about reports for the admin dashboard. Admin only.",
+        description=(
+            "Returns aggregate stats about reports for the admin"
+            " dashboard. Admin only."
+        ),
     ),
 )
 class AdminStatsView(RetrieveAPIView):
@@ -367,7 +369,9 @@ class AdminStatsView(RetrieveAPIView):
     def get(self, request):
         total = Report.objects.count()
         by_status = Report.objects.values("status").annotate(count=Count("id"))
-        by_category = Report.objects.values("category__name", "category__name_pt").annotate(count=Count("id"))
+        by_category = Report.objects.values(
+            "category__name", "category__name_pt"
+        ).annotate(count=Count("id"))
 
         thirty_days_ago = timezone.now() - timedelta(days=30)
         per_day = (
@@ -403,7 +407,21 @@ class ReportExportView(APIView):
             headers={"Content-Disposition": 'attachment; filename="reports.csv"'},
         )
         writer = csv.writer(response)
-        writer.writerow(["ID", "Title", "Description", "Category", "Status", "Address", "Latitude", "Longitude", "Created", "Updated", "Tracking Token"])
+        writer.writerow(
+            [
+                "ID",
+                "Title",
+                "Description",
+                "Category",
+                "Status",
+                "Address",
+                "Latitude",
+                "Longitude",
+                "Created",
+                "Updated",
+                "Tracking Token",
+            ]
+        )
         for r in reports:
             writer.writerow([
                 r.id, r.title, r.description, r.category.name, r.status,

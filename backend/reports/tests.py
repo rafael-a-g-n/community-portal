@@ -1,6 +1,6 @@
-from io import BytesIO
 import os
 import uuid
+from io import BytesIO
 
 import pytest
 from django.contrib.auth import get_user_model
