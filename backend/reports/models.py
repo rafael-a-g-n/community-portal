@@ -41,6 +41,13 @@ class Report(models.Model):
     )
     photo = models.ImageField(upload_to="reports/photos/", blank=True, null=True)
     resolution_comment = models.TextField(blank=True)
+    latitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True
+    )
+    longitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True
+    )
+    address = models.CharField(max_length=500, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

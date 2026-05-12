@@ -70,6 +70,9 @@ class ReportSerializer(serializers.ModelSerializer):
             "resolution_comment",
             "photo",
             "tracking_token",
+            "latitude",
+            "longitude",
+            "address",
             "created_at",
             "updated_at",
         ]
@@ -107,6 +110,16 @@ class ReportSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 f"Status must be one of: {', '.join(valid_choices)}"
             )
+        return value
+
+    def validate_latitude(self, value):
+        if value is not None and (value < -90 or value > 90):
+            raise serializers.ValidationError("Latitude must be between -90 and 90.")
+        return value
+
+    def validate_longitude(self, value):
+        if value is not None and (value < -180 or value > 180):
+            raise serializers.ValidationError("Longitude must be between -180 and 180.")
         return value
 
     def validate_photo(self, value: Any) -> Any:
