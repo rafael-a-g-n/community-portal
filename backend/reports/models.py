@@ -26,6 +26,7 @@ class Report(models.Model):
         RESOLVED = "resolved", "Resolved"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    tracking_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     category = models.ForeignKey(
