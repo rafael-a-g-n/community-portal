@@ -151,8 +151,8 @@ class ReportSerializer(serializers.ModelSerializer):
                 )
         except serializers.ValidationError:
             raise
-        except Exception:
-            raise serializers.ValidationError("Invalid image file.")
+        except Exception as err:
+            raise serializers.ValidationError("Invalid image file.") from err
 
         if hasattr(value, "seek"):
             value.seek(0)

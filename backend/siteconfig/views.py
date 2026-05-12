@@ -4,7 +4,7 @@ from rest_framework.permissions import BasePermission
 
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
 
-from .models import SiteSettings
+from .models import ContactSubmission, SiteSettings
 from .serializers import SiteSettingsSerializer, ContactSubmissionSerializer
 
 

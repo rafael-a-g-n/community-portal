@@ -1,12 +1,12 @@
-import pytest
-from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
-from rest_framework.test import APIClient
-from PIL import Image
-
 from io import BytesIO
 import os
 import uuid
+
+import pytest
+from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
+from PIL import Image
+from rest_framework.test import APIClient
 
 from .models import Category, Report
 

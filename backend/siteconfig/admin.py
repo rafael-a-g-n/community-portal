@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import SiteSettings, ContactSubmission
+from .models import ContactSubmission, SiteSettings
 
 
 @admin.register(SiteSettings)

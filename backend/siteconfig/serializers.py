@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import SiteSettings, ContactSubmission
+from .models import ContactSubmission, SiteSettings
 
 
 class SiteSettingsSerializer(serializers.ModelSerializer):

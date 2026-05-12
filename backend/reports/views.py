@@ -1,11 +1,12 @@
 import csv
+from datetime import timedelta
 
 from django.db.models import Count, QuerySet
 from django.db.models.deletion import ProtectedError
 from django.http import StreamingHttpResponse
 from django.utils import timezone
-from datetime import timedelta
 
+from rest_framework import status as http_status
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import (
@@ -13,13 +14,10 @@ from rest_framework.generics import (
     RetrieveAPIView,
     RetrieveUpdateDestroyAPIView,
 )
-from rest_framework.permissions import BasePermission
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, BasePermission, IsAdminUser
 from rest_framework.response import Response
-from rest_framework.throttling import BaseThrottle
-from rest_framework.throttling import AnonRateThrottle
+from rest_framework.throttling import AnonRateThrottle, BaseThrottle
 from rest_framework.views import APIView
-from rest_framework import status as http_status
 
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
@@ -29,11 +27,15 @@ from drf_spectacular.utils import (
     extend_schema_view,
 )
 
-from .filters import ReportFilter
-from .models import Category, Comment, Report
-from .serializers import CategorySerializer, CategoryWriteSerializer, CommentSerializer, ReportSerializer
-
 from auditlog.models import AuditLog
+from .filters import ReportFilter
+from .models import Category, Report
+from .serializers import (
+    CategorySerializer,
+    CategoryWriteSerializer,
+    CommentSerializer,
+    ReportSerializer,
+)
 
 
 @extend_schema_view(
@@ -147,7 +149,7 @@ class CategoryAdminDetailView(RetrieveUpdateDestroyAPIView):
         try:
             name = instance.name
             instance.delete()
-        except ProtectedError:
+        except ProtectedError as err:
             report_count: int = Report.objects.filter(category=instance).count()
             raise ValidationError(
                 {
@@ -157,7 +159,7 @@ class CategoryAdminDetailView(RetrieveUpdateDestroyAPIView):
                         "Reassign or delete those reports first."
                     )
                 }
-            )
+            ) from err
         AuditLog.objects.create(
             actor=request.user,
             action="delete",
