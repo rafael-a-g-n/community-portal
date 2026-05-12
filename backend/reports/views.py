@@ -28,10 +28,11 @@ from rest_framework.views import APIView
 from auditlog.models import AuditLog
 
 from .filters import ReportFilter
-from .models import Category, Report
+from .models import Category, Comment, Report
 from .serializers import (
     CategorySerializer,
     CategoryWriteSerializer,
+    CommentSerializer,
     ReportSerializer,
 )
 
@@ -428,3 +429,19 @@ class ReportExportView(APIView):
                 r.created_at.isoformat(), r.updated_at.isoformat(), r.tracking_token
             ])
         return response
+
+
+class ReportCommentListCreateView(ListCreateAPIView):
+    """List (public) and create (public, throttled) comments on a report."""
+
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+    throttle_classes = [AnonRateThrottle]
+
+    def get_queryset(self):
+        return Comment.objects.filter(
+            report_id=self.kwargs["pk"]
+        ).order_by("created_at")
+
+    def perform_create(self, serializer):
+        serializer.save(report_id=self.kwargs["pk"])
