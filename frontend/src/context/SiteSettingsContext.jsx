@@ -18,7 +18,10 @@ const defaultSettings = {
   footer_copyright_text: "",
   detail_official_response_label: "Official Response",
   detail_support_title: "Need Help?",
-  detail_support_body: "If you have more information about this issue, please contact our community support team."
+  detail_support_body: "If you have more information about this issue, please contact our community support team.",
+  contact_email: "",
+  privacy_body: "",
+  terms_body: "",
 };
 
 const SiteSettingsContext = createContext({

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import SiteSettings
+from .models import SiteSettings, ContactSubmission
 
 
 class SiteSettingsSerializer(serializers.ModelSerializer):
@@ -23,3 +23,12 @@ class SiteSettingsSerializer(serializers.ModelSerializer):
             key: value.strip() if isinstance(value, str) else value
             for key, value in attrs.items()
         }
+
+
+class ContactSubmissionSerializer(serializers.ModelSerializer):
+    """Serializer for the public contact form submission."""
+
+    class Meta:
+        model = ContactSubmission
+        fields = ["id", "name", "email", "message", "created_at"]
+        read_only_fields = ["id", "created_at"]

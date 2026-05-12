@@ -8,6 +8,9 @@ import PublicLayout from './components/PublicLayout';
 import AboutPage from './pages/AboutPage';
 import TrackReportPage from './pages/TrackReportPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ContactPage from './pages/ContactPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
 
 
 export default function App() {
@@ -26,6 +29,9 @@ export default function App() {
           <Route path="/reports/:id" element={<ReportDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/track" element={<TrackReportPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

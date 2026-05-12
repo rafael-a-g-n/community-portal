@@ -1,11 +1,11 @@
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.permissions import BasePermission
 
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
 
 from .models import SiteSettings
-from .serializers import SiteSettingsSerializer
+from .serializers import SiteSettingsSerializer, ContactSubmissionSerializer
 
 
 @extend_schema_view(
@@ -49,3 +49,22 @@ class SiteSettingsView(RetrieveUpdateAPIView):
         if self.request.method == "PATCH":
             return [IsAdminUser()]
         return [AllowAny()]
+
+
+@extend_schema_view(
+    create=extend_schema(
+        summary="Submit contact form message",
+        description="Public endpoint to submit a contact form message.",
+        request=ContactSubmissionSerializer,
+        responses={
+            201: ContactSubmissionSerializer,
+            400: OpenApiResponse(description="Validation failed."),
+        },
+    ),
+)
+class ContactSubmissionView(CreateAPIView):
+    """Public endpoint for visitors to submit contact form messages."""
+
+    queryset = ContactSubmission.objects.all()
+    serializer_class = ContactSubmissionSerializer
+    permission_classes = [AllowAny]

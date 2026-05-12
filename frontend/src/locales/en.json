@@ -113,5 +113,19 @@
   "notFound": {
     "title": "Page not found",
     "description": "The page you're looking for doesn't exist or has been moved."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Have a question, suggestion, or feedback? We'd love to hear from you.",
+    "nameLabel": "Your Name",
+    "namePlaceholder": "John Doe",
+    "emailLabel": "Your Email",
+    "emailPlaceholder": "john@example.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Tell us how we can help...",
+    "sendButton": "Send Message",
+    "thankYou": "Message Sent!",
+    "successMessage": "Thank you for reaching out. We'll get back to you as soon as possible.",
+    "noContent": "Content coming soon."
   }
 }

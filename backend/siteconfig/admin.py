@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import SiteSettings
+from .models import SiteSettings, ContactSubmission
 
 
 @admin.register(SiteSettings)
@@ -39,3 +39,11 @@ class SiteSettingsAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None) -> bool:
         """Prevent accidental deletion of the singleton via Django admin."""
         return False
+
+
+@admin.register(ContactSubmission)
+class ContactSubmissionAdmin(admin.ModelAdmin):
+    list_display = ["email", "name", "created_at"]
+    list_filter = ["created_at"]
+    search_fields = ["email", "name", "message"]
+    readonly_fields = ["name", "email", "message", "created_at"]

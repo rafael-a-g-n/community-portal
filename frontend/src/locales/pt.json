@@ -113,5 +113,19 @@
   "notFound": {
     "title": "Página não encontrada",
     "description": "A página que procura não existe ou foi movida."
+  },
+  "contact": {
+    "title": "Contacte-nos",
+    "subtitle": "Tem uma pergunta, sugestão ou feedback? Adoraríamos ouvir de si.",
+    "nameLabel": "O Seu Nome",
+    "namePlaceholder": "João Silva",
+    "emailLabel": "O Seu Email",
+    "emailPlaceholder": "joao@exemplo.com",
+    "messageLabel": "Mensagem",
+    "messagePlaceholder": "Diga-nos como podemos ajudar...",
+    "sendButton": "Enviar Mensagem",
+    "thankYou": "Mensagem Enviada!",
+    "successMessage": "Obrigado por nos contactar. Responderemos o mais breve possível.",
+    "noContent": "Conteúdo em breve."
   }
 }

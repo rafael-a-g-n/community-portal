@@ -222,6 +222,40 @@ class SiteSettings(models.Model):
         help_text="[PT] Texto para o cartão de suporte.",
     )
 
+    # ------------------------------------------------------------------ #
+    # Privacy Policy, Terms, and Contact                                   #
+    # ------------------------------------------------------------------ #
+    contact_email = models.EmailField(
+        max_length=254,
+        blank=True,
+        default="",
+        help_text="Email address where contact form submissions are sent.",
+    )
+    privacy_body = models.TextField(
+        max_length=10000,
+        blank=True,
+        default="",
+        help_text="[EN] Privacy policy body text.",
+    )
+    privacy_body_pt = models.TextField(
+        max_length=10000,
+        blank=True,
+        default="",
+        help_text="[PT] Texto do corpo da política de privacidade.",
+    )
+    terms_body = models.TextField(
+        max_length=10000,
+        blank=True,
+        default="",
+        help_text="[EN] Terms of service body text.",
+    )
+    terms_body_pt = models.TextField(
+        max_length=10000,
+        blank=True,
+        default="",
+        help_text="[PT] Texto do corpo dos termos de serviço.",
+    )
+
     class Meta:
         verbose_name = "Site Settings"
         verbose_name_plural = "Site Settings"
@@ -239,3 +273,20 @@ class SiteSettings(models.Model):
         """Return the single settings instance, creating it if absent."""
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class ContactSubmission(models.Model):
+    """A message submitted via the public contact form."""
+
+    name = models.CharField(max_length=200, blank=True, default="")
+    email = models.EmailField(max_length=254)
+    message = models.TextField(max_length=5000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Contact Submission"
+        verbose_name_plural = "Contact Submissions"
+
+    def __str__(self) -> str:
+        return f"{self.email} - {self.created_at:%Y-%m-%d}"
