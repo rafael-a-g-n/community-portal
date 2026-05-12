@@ -75,8 +75,12 @@ export const reportService = {
     return normalizeReport(response.data);
   },
 
-  async updateReport(id, data) {
-    const response = await api.patch(`/reports/${id}/`, data);
+  async updateReport(id, data, isMultipart = false) {
+    const config = {};
+    if (isMultipart) {
+      config.headers = { 'Content-Type': 'multipart/form-data' };
+    }
+    const response = await api.patch(`/reports/${id}/`, data, config);
     return normalizeReport(response.data);
   },
 
