@@ -114,6 +114,12 @@
     "title": "Page not found",
     "description": "The page you're looking for doesn't exist or has been moved."
   },
+  "share": {
+    "title": "Share this report",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "shareOn": "Share on {platform}"
+  },
   "contact": {
     "title": "Contact Us",
     "subtitle": "Have a question, suggestion, or feedback? We'd love to hear from you.",

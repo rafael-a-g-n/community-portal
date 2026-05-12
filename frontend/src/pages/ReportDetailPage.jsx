@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { reportService, normalizeMediaUrl } from '../services/reportService';
 import StatusBadge from '../components/StatusBadge';
+import ShareButtons from '../components/ShareButtons';
 import {
   ArrowLeft,
   Calendar,
@@ -169,6 +170,14 @@ export default function ReportDetailPage() {
               </p>
             </motion.div>
           )}
+
+          {/* Share Buttons */}
+          <ShareButtons
+            title={report.title}
+            description={report.description}
+            photo={imageUrl}
+            url={window.location.href}
+          />
         </div>
 
         {/* Sidebar */}

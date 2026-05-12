@@ -114,6 +114,12 @@
     "title": "Página não encontrada",
     "description": "A página que procura não existe ou foi movida."
   },
+  "share": {
+    "title": "Partilhar este relato",
+    "copyLink": "Copiar Link",
+    "copied": "Copiado!",
+    "shareOn": "Partilhar no {platform}"
+  },
   "contact": {
     "title": "Contacte-nos",
     "subtitle": "Tem uma pergunta, sugestão ou feedback? Adoraríamos ouvir de si.",
