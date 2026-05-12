@@ -26,6 +26,7 @@ from rest_framework.throttling import AnonRateThrottle, BaseThrottle
 from rest_framework.views import APIView
 
 from auditlog.models import AuditLog
+
 from .filters import ReportFilter
 from .models import Category, Report
 from .serializers import (
