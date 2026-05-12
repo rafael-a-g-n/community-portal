@@ -98,7 +98,7 @@
     "photoLabel": "Photo (Optional)",
     "uploadFile": "Upload a file",
     "dragDrop": "or drag and drop",
-    "fileLimits": "PNG, JPG, GIF up to 10MB",
+    "fileLimits": "PNG, JPG, GIF up to 5MB",
     "submitting": "Submitting...",
     "submitButton": "Submit Report"
   }

@@ -98,7 +98,7 @@
     "photoLabel": "Foto (Opcional)",
     "uploadFile": "Carregar um ficheiro",
     "dragDrop": "ou arraste e solte",
-    "fileLimits": "PNG, JPG, GIF até 10MB",
+    "fileLimits": "PNG, JPG, GIF até 5MB",
     "submitting": "A submeter...",
     "submitButton": "Submeter Relato"
   }
