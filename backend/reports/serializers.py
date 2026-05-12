@@ -4,7 +4,7 @@ from typing import Any
 from PIL import Image
 from rest_framework import serializers
 
-from .models import Category, Report
+from .models import Category, Comment, Report
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -45,6 +45,13 @@ class CategoryWriteSerializer(serializers.ModelSerializer):
                 "Icon label must not exceed 120 characters."
             )
         return value
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ["id", "author_name", "body", "created_at"]
+        read_only_fields = ["id", "created_at"]
 
 
 class ReportSerializer(serializers.ModelSerializer):

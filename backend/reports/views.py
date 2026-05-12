@@ -24,8 +24,8 @@ from drf_spectacular.utils import (
 )
 
 from .filters import ReportFilter
-from .models import Category, Report
-from .serializers import CategorySerializer, CategoryWriteSerializer, ReportSerializer
+from .models import Category, Comment, Report
+from .serializers import CategorySerializer, CategoryWriteSerializer, CommentSerializer, ReportSerializer
 
 
 @extend_schema_view(

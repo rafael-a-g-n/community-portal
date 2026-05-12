@@ -51,5 +51,18 @@ class Report(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class Comment(models.Model):
+    report = models.ForeignKey(
+        Report,
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    author_name = models.CharField(max_length=100, blank=True, default="Anonymous")
+    body = models.TextField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
     def __str__(self) -> str:
-        return self.title
+        return f"Comment by {self.author_name} on {self.report}"

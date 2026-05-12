@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     CategoryAdminView,
     CategoryAdminDetailView,
+    ReportCommentListCreateView,
     ReportListCreateView,
     ReportDetailView,
     ReportTrackView,
@@ -14,4 +15,5 @@ urlpatterns = [
     path("reports/", ReportListCreateView.as_view(), name="report-list-create"),
     path("reports/<uuid:pk>/", ReportDetailView.as_view(), name="report-detail"),
     path("reports/track/<uuid:token>/", ReportTrackView.as_view(), name="report-track"),
+    path("reports/<uuid:pk>/comments/", ReportCommentListCreateView.as_view(), name="report-comment-list-create"),
 ]
